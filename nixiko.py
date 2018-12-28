@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import random
 
@@ -10,16 +10,17 @@ from model import PeriodicScript
 
 
 @click.command()
-@click.option('--debug', '-d', is_flag=True, default=False, help='Debug mode. No tweet if set')
+@click.option('--debug', '-d', is_flag=True, help='Debug mode. No tweet if set')
 def tweet(debug):
     with session_scope() as session:
         rand = random.randrange(0, session.query(PeriodicScript).count())
         row = session.query(PeriodicScript)[rand]
-        log.debug(f'debug mode: {debug}')
+        print(f'debug mode: {debug}')
         print(row)
 
 @click.group()
 def cli():
+    print('cli called')
     log.debug('cli() called')
 
 
