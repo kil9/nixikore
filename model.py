@@ -3,6 +3,8 @@ import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 
+from script import compile_script
+
 Base = declarative_base()
 
 
@@ -44,6 +46,9 @@ class PeriodicScript(Base):
     added_at = Column(DateTime, default=datetime.datetime.now)
     modified_by = Column(String(512), default='system')
     modified_at = Column(DateTime, default=datetime.datetime.now)
+
+    def compile(self):
+        return compile_script(self.contents, self.image_keyword)
 
     def __repr__(self):
         form = (self.id, self.contents)

@@ -1,0 +1,10 @@
+---
+name: "랜덤"
+children:
+  - name: "동물"
+    children:
+      - name: "사람"
+      - name: "펫"
+  - name: "식물"
+  - name: "문장"
+  - name: "장소"

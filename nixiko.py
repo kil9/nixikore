@@ -14,13 +14,12 @@ from model import PeriodicScript
 def tweet(debug):
     with session_scope() as session:
         rand = random.randrange(0, session.query(PeriodicScript).count())
-        row = session.query(PeriodicScript)[rand]
-        print(f'debug mode: {debug}')
-        print(row)
+        script = session.query(PeriodicScript)[rand]
+        log.debug(script)
+        script.compile()
 
 @click.group()
 def cli():
-    print('cli called')
     log.debug('cli() called')
 
 
