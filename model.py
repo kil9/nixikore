@@ -59,6 +59,7 @@ class Word(Base):
     __tablename__ = 'words'
 
     id = Column(Integer, primary_key=True)
+    category = Column(String(256))
     contents = Column(Text)
 
     added_by = Column(String(512), default='system')

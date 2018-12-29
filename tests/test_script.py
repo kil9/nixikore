@@ -17,7 +17,13 @@ class ScriptTestCase(unittest.TestCase):
         self.assertNotEqual('', script_in)
 
     def test_find_literals(self):
-        script = '%{multi %{multi} } literals'
+        script = '%{사람 %{사람} } %{랜덤} literals'
         literals = find_literals(script)
 
-        self.assertEqual(literals, ())
+        self.assertEqual(literals, ['%{사람}', '%{랜덤}'])
+
+    def test_find_literals_matchall(self):
+        script = '%{{사람}} literals'
+        literals = find_literals(script)
+
+        self.assertEqual(literals, ['%{{사람}}'])

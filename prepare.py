@@ -1,29 +1,55 @@
-# -*- code: utf-8 -*-
 #!/usr/bin/python3
+
+import os
+
 
 # create scheme
 from sqlalchemy import create_engine
-# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base
 
 DB_PASSWORD = os.environ['DB_PASSWORD']
 engine = create_engine(f'mysql://nixiko:{DB_PASSWORD}@localhost/nixiko?charset=utf8')
+
+Base = declarative_base()
 from model import *
-# Base = declarative_base()
+Base.metadata.create_all(engine)
 
-# Base.metadata.create_all(engine)
+# add script samples
+def make_scripts():
+    with open('data/script.txt') as f:
+        scripts = f.readlines()
 
-# add samples
-with open('script.txt') as f:
-    scripts = f.readlines()
+    out_scripts = [PeriodicScript(contents=contents.strip()) for contents in scripts]
 
-periodic_scripts = [PeriodicScript(contents=script.strip()) for script in scripts]
+    return out_scripts
 
-from sqlalchemy.orm import sessionmaker
-Session = sessionmaker(bind=engine)
+def make_words():
+    with open('data/word.txt') as f:
+        words = f.readlines()
 
-session = Session()
+    out_words = []
+    for word in words:
+        w = word.strip()
+        splitted = w.split(' ')
+        category = splitted[0]
+        contents = ' '.join(splitted[1:])
 
-for script in periodic_scripts:
-    session.add(script)
+        out_words.append(Word(category=category, contents=contents))
 
-session.commit()
+    return out_words
+
+def insert(data):
+    from sqlalchemy.orm import sessionmaker
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    for entry in data:
+        session.add(entry)
+
+    session.commit()
+
+
+scripts = make_scripts()
+words = make_words()
+insert(scripts)
+insert(words)

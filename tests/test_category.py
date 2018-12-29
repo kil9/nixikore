@@ -6,7 +6,7 @@ from category import Category
 class ScriptTestCase(unittest.TestCase):
     def test_find_node(self):
         category = Category('data/category.yaml')
-        self.assertEqual(None, category.find_node('no'))
+        self.assertIsNone(category.find_node('no'))
         self.assertEqual({'name': '사람'}, category.find_node('사람'))
 
     def test_all_children(self):
