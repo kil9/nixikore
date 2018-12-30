@@ -8,3 +8,4 @@ children:
   - name: "식물"
   - name: "문장"
   - name: "장소"
+  - name: "물건"

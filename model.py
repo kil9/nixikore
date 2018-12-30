@@ -1,9 +1,11 @@
 import datetime
+import re
 
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 
-from script import compile_script
+from config import log, session_scope
+
 
 Base = declarative_base()
 
@@ -47,13 +49,9 @@ class PeriodicScript(Base):
     modified_by = Column(String(512), default='system')
     modified_at = Column(DateTime, default=datetime.datetime.now)
 
-    def compile(self):
-        return compile_script(self.contents, self.image_keyword)
-
     def __repr__(self):
         form = (self.id, self.contents)
         return "<PeriodicScript[%r] %r)>" % form
-
 
 class Word(Base):
     __tablename__ = 'words'
@@ -66,3 +64,7 @@ class Word(Base):
     added_at = Column(DateTime, default=datetime.datetime.now)
     modified_by = Column(String(512), default='system')
     modified_at = Column(DateTime, default=datetime.datetime.now)
+
+    def __repr__(self):
+        form = (self.id, self.category, self.contents)
+        return "<Word[%r] %r / %r)>" % form

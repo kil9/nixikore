@@ -8,6 +8,8 @@ from  sqlalchemy.sql.expression import func, select
 from config import log, session_scope
 from model import PeriodicScript
 
+from script import compile_script
+
 
 @click.command()
 @click.option('--debug', '-d', is_flag=True, help='Debug mode. No tweet if set')
@@ -16,7 +18,7 @@ def tweet(debug):
         rand = random.randrange(0, session.query(PeriodicScript).count())
         script = session.query(PeriodicScript)[rand]
         log.debug(script)
-        script.compile()
+        compile_script(script.contents, script.image_keyword)
 
 @click.group()
 def cli():
