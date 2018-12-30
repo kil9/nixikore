@@ -4,6 +4,9 @@ children:
   - name: "동물"
     children:
       - name: "사람"
+        children:
+          - name: "실존인물"
+          - name: "캐릭터"
       - name: "펫"
   - name: "식물"
   - name: "문장"

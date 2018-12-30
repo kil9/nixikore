@@ -36,6 +36,8 @@ class Category:
         return result
 
 
+Categories = Category('data/category.yaml')
+
 if __name__ == "__main__":
     cat = Category('data/category.yaml')
 

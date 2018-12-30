@@ -12,7 +12,8 @@ APP_HOME = Path(os.path.dirname(os.path.abspath(__file__)))
 
 
 # log
-LOG_FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
+# LOG_FORMAT = '%(asctime)s [%(levelname).4s] %(funcName)20s / %(message)s'
+LOG_FORMAT = '%(asctime)s [%(levelname).4s] %(message)s'
 
 logging.basicConfig(
         filename=APP_HOME / 'var/log/nixiko.log',
