@@ -6,8 +6,8 @@ class Category:
         self.category = self.load_category(filename)
 
     def load_category(self, filename):
-        stream = open(filename, 'r')
-        category = yaml.load(stream)
+        with open(filename, 'r') as stream:
+            category = yaml.load(stream)
 
         return category
 

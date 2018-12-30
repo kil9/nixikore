@@ -28,7 +28,7 @@ class Literal():
                     or_(Word.category == c for c in all_categories)).count()
             if count == 0:
                 log.error(f'count: 0 for category {all_categories}')
-                return self.content
+                raise Exception('no entry for category')
             ind = random.randrange(0, count)
             cat = session.query(Word).filter(
                     or_(Word.category == c for c in all_categories))[ind]
@@ -36,7 +36,7 @@ class Literal():
             count = session.query(Word).filter_by(category=self.category).count()
             if count == 0:
                 log.error(f'count: 0 for category {self.category}')
-                return self.content
+                raise Exception(f'no entry for category {self.category}')
             ind = random.randrange(0, count)
             cat = session.query(Word).filter_by(category=self.category)[ind]
         self.content = cat.contents
@@ -59,7 +59,11 @@ def replace_literals(script, session):
         return script
 
     for literal in literals:
-        rep = Literal(literal, session).replace()
+        try:
+            rep = Literal(literal, session).replace()
+        except:
+            log.error(f'failed to replace literal: {literal}')
+            return script
         log.debug(f'literal: {literal} -> {rep}')
 
         words = script.split(' ')

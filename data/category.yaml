@@ -10,5 +10,7 @@ children:
       - name: "펫"
   - name: "식물"
   - name: "문장"
+    children:
+      - name: "명언"
   - name: "장소"
   - name: "물건"
