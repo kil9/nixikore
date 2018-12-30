@@ -39,19 +39,27 @@ class Literal():
                 raise Exception(f'no entry for category {self.category}')
             ind = random.randrange(0, count)
             cat = session.query(Word).filter_by(category=self.category)[ind]
-        self.content = cat.contents
+
+
+        rep = replace_literals(cat.contents, session)
+        self.content = rep
         return self.content
 
 def determine_particle(word: str, rep: str) -> str:
     particle = word.replace(rep, '')
     if '(' not in particle:
         return word
-    if '%' in rep:
+
+    if '%' in word:
         return word
 
-    ret = tossi.postfix_particle(rep, particle)
+    ret = tossi.postfix(rep, particle)
     log.error(f'{rep} / {particle} -> {ret}')
     return ret
+
+def find_literals(script: str):
+    regex_literal = r'%{\w*?}|%{{\w*?}}'
+    return re.findall(regex_literal, script)
 
 def replace_literals(script, session):
     literals = find_literals(script)
@@ -78,14 +86,10 @@ def replace_literals(script, session):
         log.error(f'words2: {words}')
         script = ' '.join(words)
 
-    return replace_literals(script, session)
+    return script
 
 
-def find_literals(script: str):
-    regex_literal = r'%{\w*?}|%{{\w*?}}'
-    return re.findall(regex_literal, script)
-
-def compile_script(script, image_keyword = None):
+def compile_script(script: str, image_keyword = None):
     with session_scope() as session:
         log.info(f'script: {script}')
         script = replace_literals(script, session)

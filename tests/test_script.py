@@ -1,7 +1,7 @@
 import unittest
 
 from config import Session
-from script import replace_literals, find_literals
+from script import replace_literals, find_literals, compile_script
 
 
 class ScriptTestCase(unittest.TestCase):
@@ -35,3 +35,10 @@ class ScriptTestCase(unittest.TestCase):
         literals = find_literals(script)
 
         self.assertEqual(literals, ['%{{사람}}'])
+
+    def test_particles(self):
+        script = '%{{사람}}(이)가 어쨌다고요'
+        script = compile_script(script, self.session)
+
+        print(script)
+        self.assertFalse('(' in script)
