@@ -3,7 +3,6 @@
 import random
 
 import click
-from  sqlalchemy.sql.expression import func, select
 
 from config import log, session_scope
 from model import PeriodicScript
@@ -19,6 +18,7 @@ def tweet(debug):
         script = session.query(PeriodicScript)[rand]
         log.debug(script)
         compile_script(script.contents, script.image_keyword)
+
 
 @click.group()
 def cli():

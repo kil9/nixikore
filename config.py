@@ -26,6 +26,7 @@ DB_PASSWORD = os.environ['DB_PASSWORD']
 engine = create_engine(f'mysql://nixiko:{DB_PASSWORD}@localhost/nixiko?charset=utf8')
 Session = sessionmaker(bind=engine)
 
+
 @contextmanager
 def session_scope():
     """Provide a transactional scope around a series of operations."""

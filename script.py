@@ -15,7 +15,7 @@ class Literal():
         self.match_all = literal.startswith('%{{')
         self.category = literal.replace('%', '').replace('{', '').replace('}', '')
         self.session = session
-        
+
     def replace(self):
         if not self.session:
             log.error('no session')
@@ -40,10 +40,10 @@ class Literal():
             ind = random.randrange(0, count)
             cat = session.query(Word).filter_by(category=self.category)[ind]
 
-
         rep = replace_literals(cat.contents, session)
         self.content = rep
         return self.content
+
 
 def determine_particle(word: str, rep: str) -> str:
     particle = word.replace(rep, '')
@@ -57,9 +57,11 @@ def determine_particle(word: str, rep: str) -> str:
     log.error(f'{rep} / {particle} -> {ret}')
     return ret
 
+
 def find_literals(script: str):
     regex_literal = r'%{\w*?}|%{{\w*?}}'
     return re.findall(regex_literal, script)
+
 
 def replace_literals(script, session):
     literals = find_literals(script)
@@ -69,14 +71,13 @@ def replace_literals(script, session):
     for literal in literals:
         try:
             rep = Literal(literal, session).replace()
-        except:
+        except Exception:
             log.error(f'failed to replace literal: {literal}')
             return script
         log.debug(f'literal: {literal} -> {rep}')
 
         words = script.split(' ')
         log.error(f'words1: {words}')
-        out_words = []
         for i, word in enumerate(words):
             if literal in word:
                 word = word.replace(literal, rep, 1)
@@ -89,10 +90,9 @@ def replace_literals(script, session):
     return script
 
 
-def compile_script(script: str, image_keyword = None):
+def compile_script(script: str, image_keyword=None):
     with session_scope() as session:
         log.info(f'script: {script}')
         script = replace_literals(script, session)
         log.info(f'final script: {script}')
         return script
-

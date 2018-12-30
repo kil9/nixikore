@@ -11,7 +11,6 @@ class ScriptTestCase(unittest.TestCase):
     def tearDown(self):
         self.session.close()
 
-
     def test_replace_literals(self):
         script_in = '%{사람}'
         script = replace_literals(script_in, self.session)
@@ -22,7 +21,7 @@ class ScriptTestCase(unittest.TestCase):
         script_in = '%{XXXX}'
         script = replace_literals(script_in, self.session)
 
-        self.assertNotEqual('', script_in)
+        self.assertEqual(script_in, script)
 
     def test_find_literals(self):
         script = '%{사람 %{사람} } %{랜덤} literals'
@@ -40,5 +39,4 @@ class ScriptTestCase(unittest.TestCase):
         script = '%{{사람}}(이)가 어쨌다고요'
         script = compile_script(script, self.session)
 
-        print(script)
         self.assertFalse('(' in script)
