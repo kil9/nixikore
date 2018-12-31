@@ -33,7 +33,7 @@ class PeriodicScript(db.Model):
     __tablename__ = 'periodic_scripts'
 
     id = db.Column(db.Integer, primary_key=True)
-    contents = db.Column(db.Text)
+    content = db.Column(db.Text)
 
     is_blocked = db.Column(db.Integer, default=0)
     image_keyword = db.Column(db.String(1024), default=None)
@@ -44,7 +44,7 @@ class PeriodicScript(db.Model):
     modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def __repr__(self):
-        form = (self.id, self.contents)
+        form = (self.id, self.content)
         return "<PeriodicScript[%r] %r)>" % form
 
 class Word(db.Model):
@@ -52,7 +52,7 @@ class Word(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(256))
-    contents = db.Column(db.Text)
+    content = db.Column(db.Text)
     is_blocked = db.Column(db.Integer, default=0)
 
     added_by = db.Column(db.String(512), default='system')
@@ -61,5 +61,5 @@ class Word(db.Model):
     modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def __repr__(self):
-        form = (self.id, self.category, self.contents)
+        form = (self.id, self.category, self.content)
         return "<Word[%r] %r / %r)>" % form

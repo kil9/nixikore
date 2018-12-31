@@ -7,33 +7,75 @@
     <title>hairpin v2</title>
   </head>
   <body>
-		<div class="ui container">
-			<div class="ui secondary pointing menu">
+    <div class="ui container">
+      <div class="ui secondary pointing menu">
         <a class="{% if menu == 'home' %}active {% endif %}item" href="/">
-					홈
-				</a>
+          Hairpin
+        </a>
         <a class="{% if menu == 'scripts' %}active {% endif %}item" href="/scripts">
-					스크립트
-				</a>
+          스크립트
+        </a>
         <a class="{% if menu == 'words' %}active {% endif %}item" href="/words">
-					단어
-				</a>
-				<div class="right menu">
-					<a class="ui item">
-						Logout
-					</a>
-				</div>
-			</div>
+          단어
+        </a>
+        <a class="{% if menu == 'categories' %}active {% endif %}item" href="/categories">
+          카테고리
+        </a>
+        <div class="right menu">
+          <a class="ui item">
+            Logout
+          </a>
+        </div>
+      </div>
+
+      {%- with messages = get_flashed_messages() -%}
+        {% if messages -%}
+          {% for message in messages %}
+          <div class="ui info message">
+            <i class="close icon"></i>
+            <div class="header">Message</div>
+            <p>{{ message }}</p>
+          </div>
+          {% endfor %}
+        {%- endif %}
+      {%- endwith -%}
+
       <div id="ui container">
         {% block contents %} {% endblock %}
       </div>
-		</div>
+      <div class="ui divider"></div>
+        <div class="ui grid">
+          <div class="row">
+            <div class="eight wide left floated column">
+              <h3>Nixiko Hairpin</h3>
+              <p>
+                <a href="https://twitter.com/kimkkiruk" class="twitter-follow-button" data-show-count="false" data-lang="en">@kimbbiruk</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                <a href="https://twitter.com/nixieko" class="twitter-follow-button" data-show-count="false" data-lang="en">@nixieko</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+              </p>
+            </div>
+            <div class="four wide right floated column">
+              <img src="{{url_for('static', filename='img/nixiko.jpg')}}">
+              <p>&copy; 2019 <a href="http://nixiko.kil9.com">Project Nixiko</a></p>
+            </div>
+          </div>
+        </div>
+    </div>
   </body>
-	<script
-		src="https://code.jquery.com/jquery-3.1.1.min.js"
-		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-		crossorigin="anonymous"></script>
-	<script src="{{url_for('static', filename='lib/Semantic-UI/semantic.min.js')}}"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="{{url_for('static', filename='lib/Semantic-UI/semantic.min.js')}}"></script>
+  <script>
+$('.message .close')
+  .on('click', function() {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+    });
+  </script>
 </html>
 {#
 vim:ft=htmldjango

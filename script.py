@@ -51,7 +51,7 @@ class Literal():
         matched = re.match(self.regex_numbers, self.content)
         start, end = matched.group('start'),matched.group('end')
         rand = random.randrange(int(start), int(end))
-        return Word(contents=str(rand))
+        return Word(content=str(rand))
 
     def _process_normal(self) -> Word:
         session = self.session
@@ -72,7 +72,7 @@ class Literal():
         else:
             replaced = self._process_normal()
 
-        rep = replace_literals(replaced.contents, self.session)
+        rep = replace_literals(replaced.content, self.session)
         self.content = rep
         return self.content
 

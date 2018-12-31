@@ -17,7 +17,7 @@ def tweet(debug):
         rand = random.randrange(0, session.query(PeriodicScript).count())
         script = session.query(PeriodicScript)[rand]
         log.debug(script)
-        tweet = compile_script(script.contents, script.image_keyword)
+        tweet = compile_script(script.content, script.image_keyword)
         log.info(f'tweet: {tweet}')
 
         if not debug:

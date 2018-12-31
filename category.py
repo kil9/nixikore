@@ -3,13 +3,14 @@ import yaml
 
 class Category:
     def __init__(self, filename):
-        self.category = self.load_category(filename)
+        with open(filename, 'r') as f:
+            self.raw = f.readlines()
+        self.raw = ''.join(self.raw)
 
-    def load_category(self, filename):
-        with open(filename, 'r') as stream:
-            category = yaml.load(stream)
+        with open(filename, 'r') as f:
+            category = yaml.load(f)
 
-        return category
+        self.category = category
 
     def find_node(self, name):
         root = self.category

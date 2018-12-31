@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% macro display_node(node, n) %}
+  <div class="item">
+    <i class="folder icon"></i>
+    <div class="content">
+      <div class="header">{{node.name}}</div>
+      <div class="description">level {{n}}</div>
+      <div class="list">
+      {% for child in node.children if 'children' in node %}
+        {{ display_node(child, n+1) }}
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+{% block contents %}
+<div class="ui segment">
+  <div class="ui list">
+    {{ display_node(payload.category, 0) }}
+  </div>
+</div>
+{% endblock %}

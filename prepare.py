@@ -14,7 +14,7 @@ def make_scripts():
     with open('data/script.txt') as f:
         scripts = f.readlines()
 
-    out_scripts = [PeriodicScript(contents=contents.strip()) for contents in scripts]
+    out_scripts = [PeriodicScript(content=content.strip()) for content in scripts]
 
     return out_scripts
 
@@ -27,9 +27,9 @@ def make_words():
         w = word.strip()
         splitted = w.split(' ')
         category = splitted[0]
-        contents = ' '.join(splitted[1:])
+        content = ' '.join(splitted[1:])
 
-        out_words.append(Word(category=category, contents=contents))
+        out_words.append(Word(category=category, content=content))
 
     return out_words
 
