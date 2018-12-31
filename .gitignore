@@ -3,6 +3,7 @@ tags
 activate
 script.txt
 word.txt
+activate.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
