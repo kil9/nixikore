@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="{{url_for('static', filename='lib/Semantic-UI/semantic.min.css')}}" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>hairpin v2</title>
+  </head>
+  <body>
+		<div class="ui container">
+			<div class="ui secondary pointing menu">
+        <a class="{% if menu == 'home' %}active {% endif %}item" href="/">
+					홈
+				</a>
+        <a class="{% if menu == 'scripts' %}active {% endif %}item" href="/scripts">
+					스크립트
+				</a>
+        <a class="{% if menu == 'words' %}active {% endif %}item" href="/words">
+					단어
+				</a>
+				<div class="right menu">
+					<a class="ui item">
+						Logout
+					</a>
+				</div>
+			</div>
+      <div id="ui container">
+        {% block contents %} {% endblock %}
+      </div>
+		</div>
+  </body>
+	<script
+		src="https://code.jquery.com/jquery-3.1.1.min.js"
+		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+		crossorigin="anonymous"></script>
+	<script src="{{url_for('static', filename='lib/Semantic-UI/semantic.min.js')}}"></script>
+</html>
+{#
+vim:ft=htmldjango
+#}

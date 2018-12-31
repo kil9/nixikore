@@ -1,69 +1,64 @@
 import datetime
 import re
 
-from sqlalchemy import Column, Integer, String, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-
-from config import log, session_scope
+from config import db, log, session_scope
 
 
-Base = declarative_base()
-
-
-class Config(Base):
+class Config(db.Model):
     __tablename__ = 'config'
-    key = Column(String(1024), primary_key=True)
-    value = Column(String(1024))
-    modified_at = Column(DateTime, default=datetime.datetime.now)
+    key = db.Column(db.String(1024), primary_key=True)
+    value = db.Column(db.String(1024))
+    modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
 
-class Admin(Base):
+class Admin(db.Model):
     __tablename__ = 'admins'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(512))
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(512))
 
 
-class Follower(Base):
+class Follower(db.Model):
     __tablename__ = 'followers'
 
-    id = Column(Integer, primary_key=True)
-    screen_name = Column(String(256))
-    mention_id = Column(String(256))
-    is_blocked = Column(Integer, default=0)
+    id = db.Column(db.Integer, primary_key=True)
+    screen_name = db.Column(db.String(256))
+    mention_id = db.Column(db.String(256))
+    is_blocked = db.Column(db.Integer, default=0)
 
-    added_at = Column(DateTime, default=datetime.datetime.now)
-    modified_at = Column(DateTime, default=datetime.datetime.now)
+    added_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
 
-class PeriodicScript(Base):
+class PeriodicScript(db.Model):
     __tablename__ = 'periodic_scripts'
 
-    id = Column(Integer, primary_key=True)
-    contents = Column(Text)
+    id = db.Column(db.Integer, primary_key=True)
+    contents = db.Column(db.Text)
 
-    is_blind = Column(Integer, default=0)
-    image_keyword = Column(String(1024), default=None)
+    is_blocked = db.Column(db.Integer, default=0)
+    image_keyword = db.Column(db.String(1024), default=None)
 
-    added_by = Column(String(512), default='system')
-    added_at = Column(DateTime, default=datetime.datetime.now)
-    modified_by = Column(String(512), default='system')
-    modified_at = Column(DateTime, default=datetime.datetime.now)
+    added_by = db.Column(db.String(512), default='system')
+    added_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    modified_by = db.Column(db.String(512), default='system')
+    modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def __repr__(self):
         form = (self.id, self.contents)
         return "<PeriodicScript[%r] %r)>" % form
 
-class Word(Base):
+class Word(db.Model):
     __tablename__ = 'words'
 
-    id = Column(Integer, primary_key=True)
-    category = Column(String(256))
-    contents = Column(Text)
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(256))
+    contents = db.Column(db.Text)
+    is_blocked = db.Column(db.Integer, default=0)
 
-    added_by = Column(String(512), default='system')
-    added_at = Column(DateTime, default=datetime.datetime.now)
-    modified_by = Column(String(512), default='system')
-    modified_at = Column(DateTime, default=datetime.datetime.now)
+    added_by = db.Column(db.String(512), default='system')
+    added_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    modified_by = db.Column(db.String(512), default='system')
+    modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def __repr__(self):
         form = (self.id, self.category, self.contents)

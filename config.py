@@ -3,8 +3,10 @@ from pathlib import Path
 import logging
 from contextlib import contextmanager
 
-from sqlalchemy.orm import sessionmaker
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 # dir
@@ -26,6 +28,13 @@ DB_PASSWORD = os.environ['DB_PASSWORD']
 engine = create_engine(f'mysql://nixiko:{DB_PASSWORD}@localhost/nixiko?charset=utf8')
 Session = sessionmaker(bind=engine)
 
+# hairpin
+hairpin = Flask('hairpin')
+hairpin.secret_key = 'wLKeYeP#W3E9hgL9lXfcM@4Q'
+hairpin.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://nixiko:{DB_PASSWORD}@localhost/nixiko?charset=utf8'
+hairpin.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(hairpin)
+
 
 @contextmanager
 def session_scope():
@@ -34,7 +43,7 @@ def session_scope():
     try:
         yield session
         session.commit()
-    except:
+    except Exception:
         session.rollback()
         raise
     finally:

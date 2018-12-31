@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+<div class="ui grid">
+  <div class="four wide column">
+		<div class="ui vertical menu">
+      <a class="{% if not payload.category %}active teal {% endif %}item"
+         href="{{ url_for('words', page=page) }}">
+				전체
+			</a>
+      {% for category in payload.categories %}
+      <a class="{% if payload.category == category %}active teal {% endif %}item"
+         href="{{ url_for('words', page=page, category=category) }}">
+        {{ category }}
+			</a>
+      {% endfor %}
+		</div>
+
+
+
+	</div>
+  <div class="twelve wide column">
+
+    <table class="ui celled table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>category</th>
+          <th>contents</th>
+          <th>is_blocked</th>
+          <!--<th>added_by</th>-->
+          <!--<th>added_at</th>-->
+          <!--<th>mod_by</th>-->
+          <!--<th>mod_at</th>-->
+        </tr>
+      </thead>
+      <tbody>
+        {%- for word in payload.words.items %}
+        <tr>
+          <td data-label="ID">{{ word.id }}</td>
+          <td data-label="category">{{ word.category }}</td>
+          <td data-label="contents">{{ word.contents }}</td>
+          <td data-label="is_blocked">
+            {% if word.is_blocked == 0 %}
+            <i class="eye icon"></i>
+            {% else %}
+            <i class="eye slash icon"></i>
+            {% endif %}
+          </td>
+          <!--<td data-label="added_by">{{ word.added_by }}</td>-->
+          <!--<td data-label="added_at">{{ word.added_at }}</td>-->
+          <!--<td data-label="modified_by">{{ word.modified_by }}</td>-->
+          <!--<td data-label="modified_at">{{ word.modified_at }}</td>-->
+        </tr>
+        {% endfor -%}
+      </tbody>
+    </table>
+
+	</div>
+</div>
+
+{% endblock %}

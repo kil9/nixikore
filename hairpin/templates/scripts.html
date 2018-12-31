@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+{% set pagination = payload.scripts %}
+
+<div class="ui pagination menu">
+	<a class="
+		{%- if not payload.scripts.has_prev %}disabled{% endif %} item"
+		 {% if payload.prev_url %}href="{{ payload.prev_url }}"{% endif %}>
+		<i class="angle double left icon"></i>
+	</a>
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <a class="item" href="{{ url_for('scripts', page=page) }}">{{ page }}</a>
+      {% else %}
+        <a class="active item">{{ page }}</a>
+      {% endif %}
+    {% else %}
+      <i class="ellipsis horizontal icon">
+    {% endif %}
+  {%- endfor %}
+  <a class="
+    {%- if not payload.scripts.has_next %}disabled{% endif %} item"
+    {% if payload.next_url %}href="{{ payload.next_url }}"{% endif %}>
+    <i class="angle double right icon"></i>
+  </a>
+</div>
+
+
+
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>contents</th>
+      <th>is_blind</th>
+      <th>img</th>
+      <!--<th>added_by</th>-->
+      <!--<th>added_at</th>-->
+      <!--<th>mod_by</th>-->
+      <!--<th>mod_at</th>-->
+    </tr>
+  </thead>
+  <tbody>
+    {%- for script in payload.scripts.items %}
+    <tr>
+      <td data-label="ID">{{ script.id }}</td>
+      <td data-label="contents">{{ script.contents }}</td>
+      <td data-label="is_blocked">
+        {% if script.is_blocked == 0 %}
+        <i class="eye icon"></i>
+        {% else %}
+        <i class="eye slash icon"></i>
+        {% endif %}
+      </td>
+      <td data-label="img">
+        {% if not script.image_keyword %}
+        <i class="minus icon"></i>
+        {% else %}
+          {{ script.image_keyword }}
+        {% endif %}
+      </td>
+      <!--<td data-label="added_by">{{ script.added_by }}</td>-->
+      <!--<td data-label="added_at">{{ script.added_at }}</td>-->
+      <!--<td data-label="modified_by">{{ script.modified_by }}</td>-->
+      <!--<td data-label="modified_at">{{ script.modified_at }}</td>-->
+    </tr>
+    {% endfor -%}
+  </tbody>
+</table>
+{% endblock %}

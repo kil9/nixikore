@@ -4,15 +4,10 @@ import os
 
 
 # create scheme
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-
-DB_PASSWORD = os.environ['DB_PASSWORD']
-engine = create_engine(f'mysql://nixiko:{DB_PASSWORD}@localhost/nixiko?charset=utf8')
-
-Base = declarative_base()
+from config import db
 from model import *
-Base.metadata.create_all(engine)
+db.drop_all()
+db.create_all()
 
 # add script samples
 def make_scripts():
@@ -39,14 +34,10 @@ def make_words():
     return out_words
 
 def insert(data):
-    from sqlalchemy.orm import sessionmaker
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
     for entry in data:
-        session.add(entry)
+        db.session.add(entry)
 
-    session.commit()
+    db.session.commit()
 
 
 scripts = make_scripts()
