@@ -25,23 +25,22 @@ class ScriptTestCase(unittest.TestCase):
 
     def test_find_literals(self):
         script = '%{사람 %{사람} } %{랜덤} literals'
-        literals = find_literals(script)
+        literals = list(find_literals(script))
         self.assertEqual(literals, ['%{사람}', '%{랜덤}'])
 
         script = '%{1000-2030}'
-        literals = find_literals(script)
+        literals = list(find_literals(script))
         self.assertEqual(literals, ['%{1000-2030}'])
 
     def test_find_literals_matchall(self):
         script = '%{{사람}} literals'
-        literals = find_literals(script)
+        literals = list(find_literals(script))
 
         self.assertEqual(literals, ['%{{사람}}'])
 
     def test_particles(self):
-        script = '%{{사람}}가 어쨌다고요'
+        script = '%{{사람}}(이)가 어쨌다고요'
         script = compile_script(script, self.session)
-        print(script)
         self.assertFalse('(' in script)
 
         script = '서울 대표(%{1900-1901})'

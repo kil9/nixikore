@@ -13,4 +13,4 @@ class ScriptTestCase(unittest.TestCase):
         category = Category('data/category.yaml')
         node = category.find_node('문장')
 
-        self.assertEqual(['문장', '명언'], category.all_children(node))
+        self.assertEqual(['문장'], category.all_children(node))
