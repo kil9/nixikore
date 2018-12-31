@@ -149,7 +149,7 @@ def process_linefeed(script: str) -> str:
     return script.replace('\\n', '\n')
 
 
-def compile_script(script: str, image_keyword=None):
+def compile_script(script: str, image_keyword=None) -> str:
     with session_scope() as session:
         log.info(f'raw script: {script}')
 
