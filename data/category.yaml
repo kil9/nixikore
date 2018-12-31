@@ -3,14 +3,25 @@ name: "랜덤"
 children:
   - name: "동물"
     children:
-      - name: "사람"
-        children:
-          - name: "실존인물"
-          - name: "캐릭터"
       - name: "펫"
+  - name: "사람"
+    children:
+      - name: "실존인물"
+      - name: "캐릭터"
   - name: "식물"
   - name: "문장"
-    children:
-      - name: "명언"
   - name: "장소"
   - name: "물건"
+  - name: "게임"
+    children:
+      - name: "온라인게임"
+  - name: "필살기"
+  - name: "게임기"
+  - name: "언어"
+  - name: "관계"
+  - name: "음식"
+  - name: "책"
+  - name: "영상"
+    children:
+      - name: "애니"
+      - name: "영화"

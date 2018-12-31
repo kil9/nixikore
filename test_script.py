@@ -39,8 +39,9 @@ class ScriptTestCase(unittest.TestCase):
         self.assertEqual(literals, ['%{{사람}}'])
 
     def test_particles(self):
-        script = '%{{사람}}(이)가 어쨌다고요'
+        script = '%{{사람}}가 어쨌다고요'
         script = compile_script(script, self.session)
+        print(script)
         self.assertFalse('(' in script)
 
         script = '서울 대표(%{1900-1901})'
@@ -61,3 +62,8 @@ class ScriptTestCase(unittest.TestCase):
         script = compile_script(script, self.session)
         split = int(len(script)/2)
         self.assertEqual(script[:split], script[split:])
+
+    def test_numbered_literal_particle(self):
+        script = '%{{사람}} %{1}(이)라고'
+        script = compile_script(script, self.session)
+        self.assertFalse('(' in script)

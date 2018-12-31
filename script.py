@@ -89,7 +89,6 @@ def determine_particle(word: str, rep: str) -> str:
         return word
 
     parsed = tossi.parse(particle)
-    log.error(f'particle: {particle}, parsed: {parsed}')
 
     try:
         ret = tossi.postfix(rep, particle)
@@ -102,7 +101,10 @@ def determine_particle(word: str, rep: str) -> str:
 
 def find_literals(script: str):
     regex_literal = r'%{\w*?}|%{{\w*?}}|%{\d*?\-\d*?}'
-    return re.findall(regex_literal, script)
+    literals = re.findall(regex_literal, script)
+    
+    # remove numbered literals
+    return (literal for literal in literals if not re.match(r'%{\d*?}', literal))
 
 
 def replace_literals(script, session):
@@ -119,22 +121,26 @@ def replace_literals(script, session):
             return script
         log.debug(f'literal: {literal} -> {rep}')
 
+        # insert normal literal
         words = script.split(' ')
-        log.info(f'words1: {words}')
-        for i, word in enumerate(words):
+        for j, word in enumerate(words):
             if literal in word:
                 word = word.replace(literal, rep, 1)
                 word = determine_particle(word, rep)
-                words[i] = word
+                words[j] = word
                 break
 
-        log.info(f'words2: {words}')
-        script = ' '.join(words)
-
+        # insert numbered literal
         numbered_literal = '%{' + str(i+1) + '}'
-        if numbered_literal in script:
-            script = script.replace(numbered_literal, rep)
-        log.info(f'words3: {script}')
+        for j, word in enumerate(words):
+            if numbered_literal in word:
+                word = word.replace(numbered_literal, rep)
+                word = determine_particle(word, rep)
+                log.debug(f'\t\treplace numbered: {numbered_literal} -> {rep}')
+                log.debug(f'\t\treplace numbered: {words[j]} -> {word}')
+                words[j] = word
+
+        script = ' '.join(words)
 
     return script
 
