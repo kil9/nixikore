@@ -24,3 +24,4 @@ children:
     children:
       - name: "애니"
       - name: "영화"
+  - name: "감탄사"

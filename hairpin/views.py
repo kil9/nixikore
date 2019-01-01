@@ -43,8 +43,8 @@ def pending_tweets():
     payload = {
             'tweets': tweets,
             'page': page,
-            'next_url': url_for('home', page=tweets.next_num) if tweets.has_next else None,
-            'prev_url': url_for('home', page=tweets.prev_num) if tweets.has_prev else None,
+            'next_url': url_for('pending_tweets', page=tweets.next_num) if tweets.has_next else None,
+            'prev_url': url_for('pending_tweets', page=tweets.prev_num) if tweets.has_prev else None,
     }
 
     return render_template('pending_tweets.html', menu='pending_tweets', payload=payload)
