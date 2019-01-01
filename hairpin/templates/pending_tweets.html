@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+<h4 class="ui dividing header">Generate</h4>
+<div class="ui green button hairpin-generate-tweet" data-tweet-count="1">
+  <i class="comment outline icon"></i> Generate a tweet
+</div>
+<div class="ui green button hairpin-generate-tweet" data-tweet-count="10">
+  <i class="comments outline icon"></i> Generate 10 tweets
+</div>
+<div class="ui red button" id="hairpin-remove-all-tweets">
+  <i class="bomb icon"></i> Remove all tweets
+</div>
+
+<h4 class="ui dividing header">Pending Tweets</h4>
+
+{% set pagination = payload.tweets %}
+<div class="ui pagination menu">
+  <a class="
+    {%- if not payload.tweets.has_prev %}disabled{% endif %} item"
+     {% if payload.prev_url %}href="{{ payload.prev_url }}"{% endif %}>
+    <i class="angle double left icon"></i>
+  </a>
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <a class="item" href="{{ url_for('home', page=page) }}">{{ page }}</a>
+      {% else %}
+        <a class="active item">{{ page }}</a>
+      {% endif %}
+    {% else %}
+      <i class="ellipsis horizontal icon"></i>
+    {% endif %}
+  {%- endfor %}
+  <a class="
+    {%- if not payload.tweets.has_next %}disabled{% endif %} item"
+    {% if payload.next_url %}href="{{ payload.next_url }}"{% endif %}>
+    <i class="angle double right icon"></i>
+  </a>
+</div>
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th class="center aligned">id</th>
+      <th>content</th>
+      <th class="center aligned">img</th>
+      <th class="center aligned">reply</th>
+      <th class="center aligned">del</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%- for tweet in payload.tweets.items %}
+    <tr>
+      <td data-label="id" class="center aligned">{{ tweet.id }}</td>
+      <td data-label="content">{{ tweet.content }}</td>
+      <td data-label="img" class="center aligned">
+        {% if not tweet.image_keyword %}
+          <i class="minus icon"></i>
+        {% else %}
+          {{ tweet.image_keyword }}
+        {% endif %}
+      </td>
+      <td data-label="reply" class="center aligned">
+        {% if not tweet.reply_id -%}
+          <i class="minus icon"></i>
+        {% else %}
+          {{ tweet.reply_id }}
+        {%- endif %}
+      </td>
+      <td data-label="delete" class="center aligned">
+        <a class="hairpin-delete"
+          data-content="{{ tweet.content }}"
+          data-url='/pending_tweets/{{ tweet.id }}'
+          href='' onclick="return false;">
+          <i class="red x icon"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor -%}
+  </tbody>
+</table>
+{% endblock %}

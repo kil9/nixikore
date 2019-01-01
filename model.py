@@ -29,6 +29,20 @@ class Follower(db.Model):
     modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
 
+class PendingTweet(db.Model):
+    __tablename__ = 'pending_tweets'
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text)
+    reply_id = db.Column(db.String(256), default=None)
+    image_keyword = db.Column(db.String(1024), default=None)
+    added_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    def __repr__(self):
+        form = (self.id, self.content, self.image_keyword)
+        return "<PendingTweet[%r] '%r' %r)>" % form
+
+
 class PeriodicScript(db.Model):
     __tablename__ = 'periodic_scripts'
 
@@ -46,6 +60,7 @@ class PeriodicScript(db.Model):
     def __repr__(self):
         form = (self.id, self.content)
         return "<PeriodicScript[%r] %r)>" % form
+
 
 class Word(db.Model):
     __tablename__ = 'words'
