@@ -3,15 +3,17 @@
 from flask import request, render_template, url_for, flash, redirect
 
 from config import hairpin, session_scope, db
-from .config import log
 from model import PeriodicScript, Word
 from support import get_twitter_api
 from category import Categories
 
 
+@hairpin.before_request
+def log_before_request():
+    hairpin.logger.info(f'[{request.method}] {request.path}')
+
 @hairpin.route('/', methods=['GET', 'POST'])
 def home():
-    log.info('called /home')
     return render_template('home.html', menu='home')
 
 @hairpin.route('/scripts', methods=['GET', 'POST'])
@@ -20,8 +22,6 @@ def scripts():
         post_scripts(request)
 
     page = request.args.get('page', default=1, type=int)
-
-    log.info('[{}] called /scripts?page={}'.format(request.method, page))
 
     scripts = PeriodicScript.query \
 	.order_by(PeriodicScript.modified_at.asc()) \
@@ -35,7 +35,6 @@ def scripts():
     return render_template('scripts.html', menu='scripts', payload=payload)
 
 def post_scripts(request):
-    log.info('[{}] /scripts {}'.format(request.method, request.form))
     script = request.form['script']
     image_keyword = request.form['image_keyword']
 
@@ -52,7 +51,7 @@ def post_scripts(request):
     try:
         db.session.commit()
     except Exception as e:
-        log.exception(e)
+        hairpin.logger.exception(e)
         flash('저장에 실패했습니다. 로그를 확인해주세요.')
         return redirect(url_for('scripts'))
 
@@ -66,8 +65,6 @@ def words():
 
     page = request.args.get('page', default=1, type=int)
     category = request.args.get('category', default=None, type=str)
-
-    log.info('called /words page: {} category: {}'.format(page, category))
 
     categories = [c[0] for c in db.session.query(Word.category).distinct().all()]
 
@@ -90,7 +87,6 @@ def words():
     return render_template('words.html', menu='words', payload=payload)
 
 def post_words(request):
-    log.info('[{}] /words {}'.format(request.method, request.form))
     category = request.form['category']
     content = request.form['content']
 
@@ -100,7 +96,7 @@ def post_words(request):
 
     word = Word(category=category, content=content)
 
-
+    return redirect(url_for('words', category=category))
 
 @hairpin.route('/categories', methods=['GET', 'POST'])
 def categories():
