@@ -5,6 +5,25 @@ $('.message .close')
         .transition('fade');
     });
 
+$('.hairpin-test-script')
+  .on('click', function() {
+    $('.hairpin-test-content')
+      .text($(this).data('content'));
+
+    $.ajax({
+      url: $(this).data('url'),
+      type: 'GET',
+      success: function(result) {
+        $('#hairpin-test-result').html(result)
+        $('.hairpin-test-modal')
+          .modal({
+            centered: false
+          }).modal('show');
+      }
+    });
+
+  });
+
 $('.hairpin-delete')
   .on('click', function() {
     $('#hairpin-action').text(
@@ -13,7 +32,7 @@ $('.hairpin-delete')
     $('.hairpin-confirm')
       .data('url', $(this).data('url'))
       .data('type', 'delete');
-    $('.ui.modal')
+    $('.hairpin-confirm-modal')
       .modal({
         centered: false
       }).modal('show');
@@ -21,7 +40,7 @@ $('.hairpin-delete')
 
 $('.actions .hairpin-cancel')
   .on('click', function() {
-    $('.ui.modal').modal('hide');
+    $('hairpin-confirm-modal').modal('hide');
   });
 
 $('.actions .hairpin-confirm')

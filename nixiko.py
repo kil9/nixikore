@@ -17,10 +17,14 @@ def generate(debug, count):
     return do_generate(debug, count)
 
 
-def do_generate(debug, count):
+def do_generate(debug, count, id=None):
+    tweets = []
     for _ in range(count):
-        ind = random.randrange(0, PeriodicScript.query.count())
-        script = PeriodicScript.query[ind]
+        if not id:
+            ind = random.randrange(0, PeriodicScript.query.count())
+            script = PeriodicScript.query[ind]
+        else:
+            script = PeriodicScript.query.filter_by(id=id).first()
 
         tweet = compile_script(script.content, script.image_keyword)
         pending_tweet = PendingTweet(content=tweet)
@@ -31,12 +35,15 @@ def do_generate(debug, count):
         msg = f'pending tweet: {tweet}'
         log.info(msg)
         print(msg)
+        tweets.append(tweet)
 
     if not debug:
         db.session.commit()
 
     log.info('done')
     print('done')
+
+    return tweets
 
 
 @click.command()

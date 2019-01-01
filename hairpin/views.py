@@ -98,6 +98,12 @@ def scripts():
     return render_template('scripts.html', menu='scripts', payload=payload)
 
 
+@hairpin.route('/scripts/test/<int:script_id>', methods=['GET'])
+def test_scripts(script_id):
+    tweets = generate(True, 10, id=script_id)
+    return render_template('test_result.html', tweets=tweets)
+
+
 @hairpin.route('/scripts', methods=['POST'])
 def post_scripts():
     script = request.form['script']

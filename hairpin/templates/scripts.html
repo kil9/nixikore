@@ -58,12 +58,13 @@
       <th>mod_by</th>
       <th>mod_at</th>
       -#}
+      <th class="center aligned">test</th>
       <th class="center aligned">del</th>
     </tr>
   </thead>
   <tbody>
     {%- for script in payload.scripts.items %}
-    <tr>
+    <tr{% if script.is_blocked %} class="negative"{% endif %}>
       <td data-label="id" class="center aligned">{{ script.id }}</td>
       <td data-label="content">{{ script.content }}</td>
       <td data-label="is_blocked" class="center aligned">
@@ -86,6 +87,14 @@
       <td data-label="modified_by">{{ script.modified_by }}</td>
       <td data-label="modified_at">{{ script.modified_at }}</td>
       -#}
+      <td data-label="test" class="center aligned">
+        <a class="hairpin-test-script"
+          data-content="{{ script.content }}"
+          data-url='/scripts/test/{{ script.id }}'
+          href='' onclick="return false;">
+          <i class="teal check square icon"></i>
+        </a>
+      </td>
       <td data-label="delete" class="center aligned">
         <a class="hairpin-delete"
           data-content="{{ script.content }}"

@@ -48,12 +48,23 @@
         {% block contents %} {% endblock %}
       </div>
 
-      <div class="ui modal">
+      <div class="ui modal hairpin-test-modal">
+        <i class="close icon"></i>
+        <div class="header hairpin-test-content"></div>
+        <div class="content">
+          <div class="description">
+            <div class="ui segments" id="hairpin-test-result">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui modal hairpin-confirm-modal">
         <i class="close icon"></i>
         <div class="header">
           엔트리를 삭제할까요?
         </div>
-        <div class="image content">
+        <div class="content">
           <div class="description" id="hairpin-action">
             detail
           </div>
