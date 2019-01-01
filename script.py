@@ -12,20 +12,20 @@ from category import Categories
 
 class LiteralType(Enum):
     NORMAL = auto()
-    MATCH_ALL = auto()
+    EXACT_MATCH = auto()
     NUMBERS = auto()
 
 
 class Literal():
     def __init__(self, literal, session):
         # self.regex_literal = r'%{\w*?}'
-        self.regex_matchall = r'%{{\w*?}}'
+        self.regex_exactmatch = r'%{{\w*?}}'
         self.regex_numbers = r'%{(?P<start>\d*?)\-(?P<end>\d*?)}'
 
         self.content = literal
 
-        if re.match(self.regex_matchall, literal):
-            self.type = LiteralType.MATCH_ALL
+        if re.match(self.regex_exactmatch, literal):
+            self.type = LiteralType.EXACTMATCH
         elif re.match(self.regex_numbers, literal):
             self.type = LiteralType.NUMBERS
         else:
@@ -34,7 +34,7 @@ class Literal():
         self.category = literal.replace('%', '').replace('{', '').replace('}', '')
         self.session = session
 
-    def _process_matchall(self) -> Word:
+    def _process_normal(self) -> Word:
         session = self.session
         all_categories = Categories.all_children(Categories.find_node(self.category))
         count = session.query(Word).filter(
@@ -53,7 +53,7 @@ class Literal():
         rand = random.randrange(int(start), int(end))
         return Word(content=str(rand))
 
-    def _process_normal(self) -> Word:
+    def _process_exactmatch(self) -> Word:
         session = self.session
         count = session.query(Word).filter_by(category=self.category).count()
         if count == 0:
@@ -65,8 +65,8 @@ class Literal():
 
 
     def replace(self):
-        if self.type == LiteralType.MATCH_ALL:
-            replaced = self._process_matchall()
+        if self.type == LiteralType.EXACT_MATCH:
+            replaced = self._process_exactmatch()
         elif self.type == LiteralType.NUMBERS:
             replaced = self._process_numbers()
         else:
