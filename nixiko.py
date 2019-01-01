@@ -42,12 +42,16 @@ def do_generate(debug, count):
 @click.command()
 @click.option('--debug', '-d', is_flag=True, help='Debug mode. No tweet if set')
 def tweet(debug):
+    return do_tweet(debug)
+
+
+def do_tweet(debug):
     tweet = PendingTweet.query.order_by(PendingTweet.added_at.asc()).first()
     if not tweet:
         msg = 'has no pending tweet. generate..'
         print(msg)
         log.warn(msg)
-        generate(debug, 1)
+        do_generate(debug, 1)
         tweet = PendingTweet.query.order_by(PendingTweet.added_at.asc()).first()
 
     if not debug:

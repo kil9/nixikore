@@ -6,7 +6,7 @@ from config import db, log, session_scope
 
 class Config(db.Model):
     __tablename__ = 'config'
-    key = db.Column(db.String(1024), primary_key=True)
+    key = db.Column(db.String(32), primary_key=True)
     value = db.Column(db.String(1024))
     modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
 

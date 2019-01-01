@@ -56,3 +56,14 @@ $('#hairpin-remove-all-tweets')
       }
     });
   });
+
+$('#hairpin-do-tweet')
+  .on('click', function() {
+    $.ajax({
+      url: '/tweet',
+      type: 'POST',
+      success: function(result) {
+        location.reload();
+      }
+    });
+  });

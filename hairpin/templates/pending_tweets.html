@@ -3,16 +3,21 @@
 
 <h4 class="ui dividing header">Generate</h4>
 <div class="ui green button hairpin-generate-tweet" data-tweet-count="1">
-  <i class="comment outline icon"></i> Generate a tweet
+  <i class="comment outline icon"></i> 트윗 1개 생성하기
 </div>
 <div class="ui green button hairpin-generate-tweet" data-tweet-count="10">
-  <i class="comments outline icon"></i> Generate 10 tweets
+  <i class="comments outline icon"></i> 트윗 10개 생성하기
 </div>
 <div class="ui red button" id="hairpin-remove-all-tweets">
-  <i class="bomb icon"></i> Remove all tweets
+  <i class="bomb icon"></i> 모든 트윗 삭제
 </div>
 
-<h4 class="ui dividing header">Pending Tweets</h4>
+<h4 class="ui dividing header">Tweet</h4>
+<div class="ui blue button" id="hairpin-do-tweet">
+  <i class="twitter icon"></i> 트윗하기
+</div>
+
+<h4 class="ui dividing header">Pending Tweets (top tweet first)</h4>
 
 {% set pagination = payload.tweets %}
 <div class="ui pagination menu">
@@ -50,7 +55,7 @@
   </thead>
   <tbody>
     {%- for tweet in payload.tweets.items %}
-    <tr>
+    <tr{% if loop.index == 1 %} class="positive"{% endif %}>
       <td data-label="id" class="center aligned">{{ tweet.id }}</td>
       <td data-label="content">{{ tweet.content }}</td>
       <td data-label="img" class="center aligned">

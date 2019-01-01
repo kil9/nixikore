@@ -6,6 +6,7 @@ from category import Categories
 from config import hairpin, db
 from model import PeriodicScript, Word, PendingTweet
 from nixiko import do_generate as generate
+from nixiko import do_tweet as tweet
 
 
 @hairpin.before_request
@@ -18,12 +19,25 @@ def home():
     return render_template('home.html', menu='home')
 
 
+@hairpin.route('/tweet', methods=['POST'])
+def do_tweet():
+    try:
+        tweet(False)
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash('트윗에 실패했습니다.')
+        return 'failed'
+
+    flash('트윗에 성공했습니다.')
+    return 'ok'
+
+
 @hairpin.route('/pending_tweets', methods=['GET'])
 def pending_tweets():
     page = request.args.get('page', default=1, type=int)
 
     tweets = PendingTweet.query \
-        .order_by(PendingTweet.id.desc()) \
+        .order_by(PendingTweet.id.asc()) \
         .paginate(page=page, per_page=20)
 
     payload = {
@@ -51,14 +65,11 @@ def generate_tweets(tweet_count: int):
 
 @hairpin.route('/pending_tweets/<tweet_id>', methods=['DELETE'])
 def delete_tweets(tweet_id):
-    if type(tweet_id) == int:
-        tweet = PendingTweet.query.filter_by(id=tweet_id).first()
-        db.session.delete(tweet)
-    elif type(tweet_id) == str and tweet_id == 'all':
+    if type(tweet_id) is str and tweet_id == 'all':
         PendingTweet.query.delete()
     else:
-        flash('failed')
-        return 'failed'
+        tweet = PendingTweet.query.filter_by(id=tweet_id).first()
+        db.session.delete(tweet)
 
     try:
         db.session.commit()
