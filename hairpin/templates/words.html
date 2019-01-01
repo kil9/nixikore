@@ -6,11 +6,11 @@
     <div class="fields">
       <div class="four wide field">
     		<label>카테고리</label>
-        <input type="text" name="category" placeholder="{{ payload.category }}">
+        <input type="text" name="category" placeholder="{{ payload.category }}" autocomplete="off">
       </div>
       <div class="ten wide field">
     		<label>내용</label>
-        <input type="text" name="content" placeholder="닉시코">
+        <input type="text" name="content" placeholder="닉시코" autocomplete="off">
       </div>
     </div>
   </div>
@@ -36,30 +36,30 @@
     <table class="ui celled table">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>id</th>
           <th>category</th>
-          <th>content</th>
-          <th>block</th>
+          <th class="center aligned">content</th>
+          <th class="center aligned">block</th>
           {#
           <th>added_by</th>
           <th>added_at</th>
           <th>mod_by</th>
-          -#}
           <th>mod_at</th>
+          -#}
           <th>del</th>
         </tr>
       </thead>
       <tbody>
         {%- for word in payload.words.items %}
         <tr>
-          <td data-label="ID">{{ word.id }}</td>
+          <td data-label="id">{{ word.id }}</td>
           <td data-label="category">
             <a href="{{ url_for('categories') }}">
             {{ word.category }}
             </a>
           </td>
           <td data-label="content">{{ word.content }}</td>
-          <td data-label="is_blocked">
+          <td data-label="is_blocked" class="center aligned">
             {% if word.is_blocked == 0 %}
             <i class="eye icon"></i>
             {% else %}
@@ -70,9 +70,9 @@
           <td data-label="added_by">{{ word.added_by }}</td>
           <td data-label="added_at">{{ word.added_at }}</td>
           <td data-label="modified_by">{{ word.modified_by }}</td>
-          -#}
           <td data-label="modified_at">{{ word.modified_at }}</td>
-          <td data-label="delete">
+          -#}
+          <td data-label="delete" class="center aligned">
             <a class="hairpin-delete"
               data-category="{{ word.category }}"
               data-content="{{ word.content }}"

@@ -24,7 +24,7 @@ def scripts():
     page = request.args.get('page', default=1, type=int)
 
     scripts = PeriodicScript.query \
-	.order_by(PeriodicScript.modified_at.asc()) \
+	.order_by(PeriodicScript.id.desc()) \
 	.paginate(page=page, per_page=20)
     payload = {
 	    'scripts': scripts,
@@ -67,10 +67,10 @@ def delete_scripts(script_id):
         db.session.commit()
     except Exception as e:
         hairpin.logger.exception(e)
-        flash('삭제에 실패했습니다. 로그를 확인해주세요.')
+        flash(f'script#{script_id} 삭제에 실패했습니다. 로그를 확인해주세요.')
         return redirect(url_for('words'))
 
-    flash('성공적으로 삭제했습니다.')
+    flash(f'script#{script_id} 삭제에 성공했습니다.')
     return 'ok'
 
 @hairpin.route('/words', methods=['GET', 'POST'])
@@ -85,12 +85,12 @@ def words():
 
     if category:
         words = Word.query \
-                .order_by(Word.modified_at.asc()) \
                 .filter_by(category=category) \
+                .order_by(Word.id.desc()) \
 	        .paginate(page=page, per_page=20)
     else:
         words = Word.query \
-                .order_by(Word.modified_at.asc()) \
+                .order_by(Word.id.desc()) \
 	        .paginate(page=page, per_page=20)
 
     payload = {
@@ -131,10 +131,10 @@ def delete_words(word_id):
         db.session.commit()
     except Exception as e:
         hairpin.logger.exception(e)
-        flash('삭제에 실패했습니다. 로그를 확인해주세요.')
+        flash(f'word#{word_id} 삭제에 실패했습니다. 로그를 확인해주세요.')
         return redirect(url_for('words'))
 
-    flash('성공적으로 삭제했습니다.')
+    flash(f'word#{word_id} 삭제에 성공했습니다.')
     return 'ok'
 
 @hairpin.route('/categories', methods=['GET', 'POST'])

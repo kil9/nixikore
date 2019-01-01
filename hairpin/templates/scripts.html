@@ -7,11 +7,11 @@
     <div class="fields">
       <div class="ten wide field">
     		<label>스크립트</label>
-        <input type="text" name="script" placeholder="닉시코다요 %{사람}!">
+        <input type="text" name="script" placeholder="닉시코다요 %{사람}!" autocomplete="off">
       </div>
       <div class="four wide field">
     		<label>이미지 키워드</label>
-        <input type="text" name="image_keyword" placeholder="안녕">
+        <input type="text" name="image_keyword" placeholder="안녕" autocomplete="off">
       </div>
     </div>
   </div>
@@ -48,7 +48,7 @@
 <table class="ui celled table">
   <thead>
     <tr>
-      <th class="center aligned">ID</th>
+      <th class="center aligned">id</th>
       <th>content</th>
       <th class="center aligned">block</th>
       <th class="center aligned">img</th>
@@ -64,7 +64,7 @@
   <tbody>
     {%- for script in payload.scripts.items %}
     <tr>
-      <td data-label="ID" class="center aligned">{{ script.id }}</td>
+      <td data-label="id" class="center aligned">{{ script.id }}</td>
       <td data-label="content">{{ script.content }}</td>
       <td data-label="is_blocked" class="center aligned">
         {% if script.is_blocked == 0 %}
