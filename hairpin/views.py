@@ -58,6 +58,21 @@ def post_scripts(request):
     flash('성공적으로 저장했습니다.')
     return redirect(url_for('scripts'))
 
+@hairpin.route('/scripts/<int:script_id>', methods=['DELETE'])
+def delete_scripts(script_id):
+    script = PeriodicScript.query.filter_by(id=script_id).first()
+    db.session.delete(script)
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash('삭제에 실패했습니다. 로그를 확인해주세요.')
+        return redirect(url_for('words'))
+
+    flash('성공적으로 삭제했습니다.')
+    return 'ok'
+
 @hairpin.route('/words', methods=['GET', 'POST'])
 def words():
     if request.method == 'POST':
@@ -96,7 +111,31 @@ def post_words(request):
 
     word = Word(category=category, content=content)
 
+    db.session.add(word)
+    try:
+        db.session.commit()
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash('저장에 실패했습니다. 로그를 확인해주세요.')
+        return redirect(url_for('words'))
+
+    flash('성공적으로 저장했습니다.')
     return redirect(url_for('words', category=category))
+
+@hairpin.route('/words/<int:word_id>', methods=['DELETE'])
+def delete_words(word_id):
+    word = Word.query.filter_by(id=word_id).first()
+    db.session.delete(word)
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash('삭제에 실패했습니다. 로그를 확인해주세요.')
+        return redirect(url_for('words'))
+
+    flash('성공적으로 삭제했습니다.')
+    return 'ok'
 
 @hairpin.route('/categories', methods=['GET', 'POST'])
 def categories():

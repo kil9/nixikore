@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block contents %}
-
-<form class="ui form", action="/words" methods="POST">
+<form class="ui form", action="/words" method="POST">
   <h4 class="ui dividing header">입력</h4>
   <div class="field">
     <div class="fields">
@@ -17,8 +16,6 @@
   </div>
   <input class="positive ui button" type="submit" value="입력">
 </form>
-
-
 <h4 class="ui dividing header">확인 및 편집</h4>
 <div class="ui grid">
   <div class="four wide column">
@@ -43,17 +40,24 @@
           <th>category</th>
           <th>content</th>
           <th>block</th>
-          <!--<th>added_by</th>-->
-          <!--<th>added_at</th>-->
-          <!--<th>mod_by</th>-->
+          {#
+          <th>added_by</th>
+          <th>added_at</th>
+          <th>mod_by</th>
+          -#}
           <th>mod_at</th>
+          <th>del</th>
         </tr>
       </thead>
       <tbody>
         {%- for word in payload.words.items %}
         <tr>
           <td data-label="ID">{{ word.id }}</td>
-          <td data-label="category">{{ word.category }}</td>
+          <td data-label="category">
+            <a href="{{ url_for('categories') }}">
+            {{ word.category }}
+            </a>
+          </td>
           <td data-label="content">{{ word.content }}</td>
           <td data-label="is_blocked">
             {% if word.is_blocked == 0 %}
@@ -62,10 +66,21 @@
             <i class="eye slash icon"></i>
             {% endif %}
           </td>
-          <!--<td data-label="added_by">{{ word.added_by }}</td>-->
-          <!--<td data-label="added_at">{{ word.added_at }}</td>-->
-          <!--<td data-label="modified_by">{{ word.modified_by }}</td>-->
+          {#
+          <td data-label="added_by">{{ word.added_by }}</td>
+          <td data-label="added_at">{{ word.added_at }}</td>
+          <td data-label="modified_by">{{ word.modified_by }}</td>
+          -#}
           <td data-label="modified_at">{{ word.modified_at }}</td>
+          <td data-label="delete">
+            <a class="hairpin-delete"
+              data-category="{{ word.category }}"
+              data-content="{{ word.content }}"
+              data-url='/words/{{ word.id }}'
+              href='' onclick="return false;">
+              <i class="red x icon"></i>
+            </a>
+          </td>
         </tr>
         {% endfor -%}
       </tbody>

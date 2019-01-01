@@ -48,39 +48,52 @@
 <table class="ui celled table">
   <thead>
     <tr>
-      <th>ID</th>
+      <th class="center aligned">ID</th>
       <th>content</th>
-      <th>is_blind</th>
-      <th>img</th>
-      <!--<th>added_by</th>-->
-      <!--<th>added_at</th>-->
+      <th class="center aligned">block</th>
+      <th class="center aligned">img</th>
+      {#
+      <th>added_by</th>
+      <th>added_at</th>
       <th>mod_by</th>
       <th>mod_at</th>
+      -#}
+      <th class="center aligned">del</th>
     </tr>
   </thead>
   <tbody>
     {%- for script in payload.scripts.items %}
     <tr>
-      <td data-label="ID">{{ script.id }}</td>
+      <td data-label="ID" class="center aligned">{{ script.id }}</td>
       <td data-label="content">{{ script.content }}</td>
-      <td data-label="is_blocked">
+      <td data-label="is_blocked" class="center aligned">
         {% if script.is_blocked == 0 %}
         <i class="eye icon"></i>
         {% else %}
         <i class="eye slash icon"></i>
         {% endif %}
       </td>
-      <td data-label="img">
+      <td data-label="img" class="center aligned">
         {% if not script.image_keyword %}
         <i class="minus icon"></i>
         {% else %}
           {{ script.image_keyword }}
         {% endif %}
       </td>
-      <!--<td data-label="added_by">{{ script.added_by }}</td>-->
-      <!--<td data-label="added_at">{{ script.added_at }}</td>-->
+      {#
+      <td data-label="added_by">{{ script.added_by }}</td>
+      <td data-label="added_at">{{ script.added_at }}</td>
       <td data-label="modified_by">{{ script.modified_by }}</td>
       <td data-label="modified_at">{{ script.modified_at }}</td>
+      -#}
+      <td data-label="delete" class="center aligned">
+        <a class="hairpin-delete"
+          data-content="{{ script.content }}"
+          data-url='/scripts/{{ script.id }}'
+          href='' onclick="return false;">
+          <i class="red x icon"></i>
+        </a>
+      </td>
     </tr>
     {% endfor -%}
   </tbody>
