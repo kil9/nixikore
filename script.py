@@ -5,7 +5,7 @@ from enum import Enum, auto
 from sqlalchemy import or_
 import tossi
 
-from config import log, session_scope
+from config import log
 from model import Word
 from category import Categories
 
@@ -14,36 +14,38 @@ class LiteralType(Enum):
     NORMAL = auto()
     EXACT_MATCH = auto()
     NUMBERS = auto()
+    SELECT = auto()
 
 
 class Literal():
-    def __init__(self, literal, session):
-        # self.regex_literal = r'%{\w*?}'
-        self.regex_exactmatch = r'%{{\w*?}}'
-        self.regex_numbers = r'%{(?P<start>\d*?)\-(?P<end>\d*?)}'
+    def __init__(self, literal):
+        # self.regex_literal = re.compile(%{\w*?}')
+        # self.regex_select = re.compile('%{[\w|]*?}')
+        self.regex_exactmatch = re.compile('%{{\w*?}}')
+        self.regex_numbers = re.compile('%{(?P<start>\d*?)\-(?P<end>\d*?)}')
 
         self.content = literal
 
-        if re.match(self.regex_exactmatch, literal):
+        if self.regex_exactmatch.match(literal):
             self.type = LiteralType.EXACTMATCH
-        elif re.match(self.regex_numbers, literal):
+        elif self.regex_numbers.match(literal):
             self.type = LiteralType.NUMBERS
+        elif '|' in literal:
+            self.type = LiteralType.SELECT
         else:
             self.type = LiteralType.NORMAL
 
         self.category = literal.replace('%', '').replace('{', '').replace('}', '')
-        self.session = session
 
     def _process_normal(self) -> Word:
-        session = self.session
         all_categories = Categories.all_children(Categories.find_node(self.category))
-        count = session.query(Word).filter(
+        count = Word.query.filter(
                 or_(Word.category == c for c in all_categories)).count()
         if count == 0:
             log.error(f'count: 0 for category {all_categories}')
             raise Exception('no entry for category')
         ind = random.randrange(0, count)
-        replaced = session.query(Word).filter(
+        replaced = Word.query.filter(
                 or_(Word.category == c for c in all_categories))[ind]
         return replaced
 
@@ -53,14 +55,18 @@ class Literal():
         rand = random.randrange(int(start), int(end))
         return Word(content=str(rand))
 
+    def _process_select(self) -> Word:
+        selections = self.category.split('|')
+        selected = random.choice(selections)
+        return Word(content=selected)
+
     def _process_exactmatch(self) -> Word:
-        session = self.session
-        count = session.query(Word).filter_by(category=self.category).count()
+        count = Word.query.filter_by(category=self.category).count()
         if count == 0:
             log.error(f'count: 0 for category {self.category}')
             raise Exception(f'no entry for category {self.category}')
         ind = random.randrange(0, count)
-        replaced = session.query(Word).filter_by(category=self.category)[ind]
+        replaced = Word.query.filter_by(category=self.category)[ind]
         return replaced
 
 
@@ -69,80 +75,87 @@ class Literal():
             replaced = self._process_exactmatch()
         elif self.type == LiteralType.NUMBERS:
             replaced = self._process_numbers()
+        elif self.type == LiteralType.SELECT:
+            replaced = self._process_select()
         else:
             replaced = self._process_normal()
 
-        rep = replace_literals(replaced.content, self.session)
-        self.content = rep
+        self.content = replaced.content
         return self.content
 
 
-def determine_particle(word: str, rep: str) -> str:
-    particle = word.replace(rep, '')
+def determine_particle(word: str, particle: str) -> str:
     if not particle.startswith('('):
-        return word
+        return word + particle
 
     if '()' in particle:
-        return word
+        return word + particle
 
     if '%' in word:
-        return word
-
-    parsed = tossi.parse(particle)
+        return word + particle
 
     try:
-        ret = tossi.postfix(rep, particle)
+        ret = tossi.postfix(word, particle)
     except ValueError as e:
         log.exception(e)
-        return word
-    log.debug(f'tossi: {rep} / {particle} -> {ret}')
+        return word + particle
+    log.debug(f'tossi: {word} / {particle} -> {ret}')
     return ret
 
 
 def find_literals(script: str):
-    regex_literal = r'%{\w*?}|%{{\w*?}}|%{\d*?\-\d*?}'
+    regex_literal = r'%{\w*?}|%{{\w*?}}|%{\d*?\-\d*?}|%{[ \w|]*?}'
     literals = re.findall(regex_literal, script)
-    
+
+
     # remove numbered literals
-    return (literal for literal in literals if not re.match(r'%{\d*?}', literal))
+    literals = (literal for literal in literals if not re.match(r'%{\d*?}', literal))
+    literals = tuple(literals)
 
+    return literals
 
-def replace_literals(script, session):
+def replace_literals(script):
+    return do_replace_literals(script, 0)
+
+def do_replace_literals(script, depth):
+    if depth > 10:
+        log.error('depth exceed')
+        return script
+
     literals = find_literals(script)
     if not literals:
         return script
 
     for i, literal in enumerate(literals):
         try:
-            rep = Literal(literal, session).replace()
+            rep = Literal(literal).replace()
         except Exception as e:
             log.exception(e)
             log.error(f'failed to replace literal: {literal}')
             return script
         log.debug(f'literal: {literal} -> {rep}')
 
+        if not literal in script:
+            continue
+
         # insert normal literal
-        words = script.split(' ')
-        for j, word in enumerate(words):
-            if literal in word:
-                word = word.replace(literal, rep, 1)
-                word = determine_particle(word, rep)
-                words[j] = word
-                break
+        pre_words, post_words = script.split(literal, 1)
+
+        splitted = post_words.split(' ', 1)
+        if len(splitted) == 2:
+            particle, post_words = splitted
+            script = pre_words + determine_particle(rep, particle) + ' ' + post_words
+        else:
+            script = pre_words + determine_particle(rep, post_words)
 
         # insert numbered literal
         numbered_literal = '%{' + str(i+1) + '}'
-        for j, word in enumerate(words):
-            if numbered_literal in word:
-                word = word.replace(numbered_literal, rep)
-                word = determine_particle(word, rep)
-                log.debug(f'\t\treplace numbered: {numbered_literal} -> {rep}')
-                log.debug(f'\t\treplace numbered: {words[j]} -> {word}')
-                words[j] = word
+        if numbered_literal in script:
+            script = script.replace(numbered_literal, rep)
+            log.debug(f'\t\treplace numbered: {numbered_literal} -> {rep}')
 
-        script = ' '.join(words)
-
-    return script
+    log.error(f'script rl: {script}')
+    return do_replace_literals(script, depth+1)
 
 
 def process_linefeed(script: str) -> str:
@@ -150,12 +163,11 @@ def process_linefeed(script: str) -> str:
 
 
 def compile_script(script: str, image_keyword=None) -> str:
-    with session_scope() as session:
-        log.info(f'raw script: {script}')
+    log.info(f'raw script: {script}')
 
-        script = replace_literals(script, session)
-        log.info(f'replaced script: {script}')
+    script = replace_literals(script)
+    log.info(f'replaced script: {script}')
 
-        script = process_linefeed(script)
-        log.info(f'final script: {script}')
-        return script
+    script = process_linefeed(script)
+    log.info(f'final script: {script}')
+    return script
