@@ -9,6 +9,8 @@ children:
   - name: "식물"
   - name: "문장"
   - name: "장소"
+    children:
+      - name: "국가"
   - name: "물건"
     children:
     - name: "게임기"
@@ -25,3 +27,4 @@ children:
       - name: "애니"
       - name: "영화"
   - name: "감탄사"
+  - name: "형용사"
