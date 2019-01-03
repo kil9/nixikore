@@ -87,12 +87,6 @@ def determine_particle(word: str, particle: str) -> str:
     if not particle.startswith('('):
         return word + particle
 
-    if '()' in particle:
-        return word + particle
-
-    if '%' in word:
-        return word + particle
-
     try:
         ret = tossi.postfix(word, particle)
     except ValueError as e:
@@ -158,7 +152,8 @@ def do_replace_literals(script, depth):
 
         # insert numbered literal
         numbered_literal = '%{' + str(i+1) + '}'
-        script = replace_literal_with_particle(script, numbered_literal, rep)
+        while numbered_literal in script:
+            script = replace_literal_with_particle(script, numbered_literal, rep)
 
     log.error(f'script rl: {script}')
     return do_replace_literals(script, depth+1)
