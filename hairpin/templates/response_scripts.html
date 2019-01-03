@@ -1,16 +1,20 @@
 {% extends 'base.html' %}
 {% block contents %}
 
-<form class="ui form" action="/scripts" method="POST">
+<form class="ui form" action="/response_scripts" method="POST">
   <h4 class="ui dividing header">입력</h4>
   <div class="field">
     <div class="fields">
-      <div class="twelve wide field">
-    		<label>스크립트</label>
+      <div class="three wide field">
+        <label>반응 키워드</label>
+        <input type="text" name="keyword" placeholder="누구" autocomplete="off">
+      </div>
+      <div class="ten wide field">
+        <label>응답 스크립트</label>
         <input type="text" name="script" placeholder="닉시코다요 %{사람}!" autocomplete="off">
       </div>
-      <div class="four wide field">
-    		<label>이미지 키워드</label>
+      <div class="three wide field">
+        <label>이미지 키워드</label>
         <input type="text" name="image_keyword" placeholder="안녕" autocomplete="off">
       </div>
     </div>
@@ -26,9 +30,7 @@
 <div class="ui message">
   <i class="close icon"></i>
   <div class="header"> 리터럴 사용법 </div>
-  <p>%{단어}: 하위 카테고리를 모두 포함하여 랜덤</p>
-  <p>%{ {단어} }: 오직 해당 카테고리 랜덤</p>
-  <p>%{X-Y}: X 이상 Y 미만의 정수</p>
+  <p>%{상대}: 멘션 상대</p>
 </div>
 
 <div class="ui pagination menu">
@@ -40,7 +42,7 @@
   {%- for page in pagination.iter_pages() %}
     {% if page %}
       {% if page != pagination.page %}
-        <a class="item" href="{{ url_for('scripts', page=page) }}">{{ page }}</a>
+        <a class="item" href="{{ url_for('response_scripts', page=page) }}">{{ page }}</a>
       {% else %}
         <a class="active item">{{ page }}</a>
       {% endif %}
@@ -58,6 +60,7 @@
   <thead>
     <tr>
       <th class="center aligned">id</th>
+      <th>keyword</th>
       <th>content</th>
       <th class="center aligned">block</th>
       <th class="center aligned">img</th>
@@ -75,6 +78,7 @@
     {%- for script in payload.scripts.items %}
     <tr{% if script.is_blocked %} class="negative"{% endif %}>
       <td data-label="id" class="center aligned">{{ script.id }}</td>
+      <td data-label="keyword">{{ script.keyword }}</td>
       <td data-label="content">{{ script.content }}</td>
       <td data-label="is_blocked" class="center aligned">
         {% if script.is_blocked == 0 %}
@@ -99,7 +103,7 @@
       <td data-label="test" class="center aligned">
         <a class="hairpin-test-script"
           data-content="{{ script.content }}"
-          data-url='/scripts/test/{{ script.id }}'
+          data-url='/response_scripts/test/{{ script.id }}'
           href='' onclick="return false;">
           <i class="teal check square icon"></i>
         </a>
@@ -107,7 +111,7 @@
       <td data-label="delete" class="center aligned">
         <a class="hairpin-delete"
           data-content="{{ script.content }}"
-          data-url='/scripts/{{ script.id }}'
+          data-url='/response_scripts/{{ script.id }}'
           href='' onclick="return false;">
           <i class="red x icon"></i>
         </a>

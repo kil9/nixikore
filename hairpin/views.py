@@ -4,7 +4,7 @@ from flask import request, render_template, url_for, flash, redirect
 
 from category import Categories
 from config import hairpin, db
-from model import PeriodicScript, Word, PendingTweet
+from model import PeriodicScript, Word, PendingTweet, ResponseScript
 from nixiko import do_generate as generate
 from nixiko import do_tweet as tweet
 
@@ -135,6 +135,78 @@ def post_scripts():
 @hairpin.route('/scripts/<int:script_id>', methods=['DELETE'])
 def delete_scripts(script_id):
     script = PeriodicScript.query.filter_by(id=script_id).first()
+    db.session.delete(script)
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash(f'script#{script_id} 삭제에 실패했습니다. 로그를 확인해주세요.')
+        return 'failed'
+
+    flash(f'script#{script_id} 삭제에 성공했습니다.')
+    return 'ok'
+
+
+@hairpin.route('/response_scripts', methods=['GET'])
+def response_scripts():
+    page = request.args.get('page', default=1, type=int)
+
+    scripts = ResponseScript.query \
+        .order_by(ResponseScript.id.desc()) \
+        .paginate(page=page, per_page=20)
+    payload = {
+      'scripts': scripts,
+      'page': page,
+      'next_url': url_for('scripts', page=scripts.next_num) if scripts.has_next else None,
+      'prev_url': url_for('scripts', page=scripts.prev_num) if scripts.has_prev else None,
+    }
+    return render_template('response_scripts.html', menu='response_scripts', payload=payload)
+
+
+@hairpin.route('/response_scripts/test/<int:script_id>', methods=['GET'])
+def test_response_scripts(script_id):
+    tweets = generate(True, 10, id=script_id, is_response=True)
+    return render_template('test_result.html', tweets=tweets)
+
+
+@hairpin.route('/response_scripts', methods=['POST'])
+def post_response_scripts():
+    keyword = request.form['keyword']
+    script = request.form['script']
+    image_keyword = request.form['image_keyword']
+
+    if not script:
+        flash('스크립트 내용이 비어있습니다.')
+        return redirect(url_for('response_scripts'))
+
+    if not keyword:
+        keyword = None
+
+    if not image_keyword:
+        image_keyword = None
+
+    response_script = ResponseScript(
+            content=script,
+            image_keyword=image_keyword,
+            keyword=keyword)
+
+    db.session.add(response_script)
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash('저장에 실패했습니다. 로그를 확인해주세요.')
+        return redirect(url_for('response_scripts'))
+
+    flash('성공적으로 저장했습니다.')
+    return redirect(url_for('response_scripts'))
+
+
+@hairpin.route('/response_scripts/<int:script_id>', methods=['DELETE'])
+def delete_response_scripts(script_id):
+    script = ResponseScript.query.filter_by(id=script_id).first()
     db.session.delete(script)
 
     try:

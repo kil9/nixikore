@@ -1,15 +1,13 @@
 #!/usr/bin/python3
 
-import os
-
 
 # create scheme
 from config import db
 from model import *
-db.drop_all()
+# db.drop_all()
 db.create_all()
 
-# add script samples
+
 def make_scripts():
     with open('data/script.txt') as f:
         scripts = f.readlines()
@@ -17,6 +15,7 @@ def make_scripts():
     out_scripts = [PeriodicScript(content=content.strip()) for content in scripts]
 
     return out_scripts
+
 
 def make_words():
     with open('data/word.txt') as f:
@@ -33,6 +32,16 @@ def make_words():
 
     return out_words
 
+
+def make_response_scripts():
+    with open('data/response.txt') as f:
+        scripts = f.readlines()
+
+    out_scripts = [ResponseScript(content=content.strip()) for content in scripts]
+
+    return out_scripts
+
+
 def insert(data):
     for entry in data:
         db.session.add(entry)
@@ -40,7 +49,6 @@ def insert(data):
     db.session.commit()
 
 
-scripts = make_scripts()
-words = make_words()
-insert(scripts)
-insert(words)
+# insert(make_scripts())
+# insert(make_words())
+insert(make_response_scripts())

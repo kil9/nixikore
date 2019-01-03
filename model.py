@@ -61,6 +61,26 @@ class PeriodicScript(db.Model):
         return "<PeriodicScript[%r] %r)>" % form
 
 
+class ResponseScript(db.Model):
+    __tablename__ = 'response_scripts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    keyword = db.Column(db.String(256))
+    content = db.Column(db.Text)
+    image_keyword = db.Column(db.String(1024), default=None)
+
+    is_blocked = db.Column(db.Integer, default=0)
+
+    added_by = db.Column(db.String(512), default='system')
+    added_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    modified_by = db.Column(db.String(512), default='system')
+    modified_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    def __repr__(self):
+        form = (self.id, self.content)
+        return "<ResponseScript[%r] %r)>" % form
+
+
 class Word(db.Model):
     __tablename__ = 'words'
 

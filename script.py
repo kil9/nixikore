@@ -6,7 +6,7 @@ from sqlalchemy import or_
 import tossi
 
 from config import log
-from model import Word
+from model import Word, ResponseScript
 from category import Categories
 
 
@@ -21,8 +21,8 @@ class Literal():
     def __init__(self, literal):
         # self.regex_literal = re.compile(%{\w*?}')
         # self.regex_select = re.compile('%{[\w|]*?}')
-        self.regex_exactmatch = re.compile('%{{\w*?}}')
-        self.regex_numbers = re.compile('%{(?P<start>\d*?)\-(?P<end>\d*?)}')
+        self.regex_exactmatch = re.compile('%{{\w*?}}')  # noqa:W605
+        self.regex_numbers = re.compile('%{(?P<start>\d*?)\-(?P<end>\d*?)}')  # noqa:W605
 
         self.content = literal
 
@@ -168,7 +168,7 @@ def process_linefeed(script: str) -> str:
     return script.replace('\\n', '\n')
 
 
-def compile_script(script: str, image_keyword=None) -> str:
+def compile_script(script: str) -> str:
     log.info(f'raw script: {script}')
 
     script = replace_literals(script)
@@ -177,3 +177,33 @@ def compile_script(script: str, image_keyword=None) -> str:
     script = process_linefeed(script)
     log.info(f'final script: {script}')
     return script
+
+
+def compile_mention(script: str, mention) -> str:
+    script = script.replace('%{상대}', mention.user.name)
+    return script
+
+
+def process_mention(mention) -> str:
+    scripts = ResponseScript.query.all()
+
+    # find candidates
+    candidates = []
+    for script in scripts:
+        if script.keyword and script.keyword in mention.text:
+            candidates.append(script)
+
+    # determine script
+    if candidates:
+        script = random.choice(candidates)
+    else:
+        no_keyword_scripts = ResponseScript.query.filter_by(keyword=None).all()
+        ind = random.randrange(0, len(no_keyword_scripts))
+        script = no_keyword_scripts[ind]
+
+    # process script
+    script = compile_mention(script.content, mention)
+    script = compile_script(script)
+
+    tweet = f'@{mention.user.screen_name} {script}'
+    return tweet
