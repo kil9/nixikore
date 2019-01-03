@@ -104,9 +104,8 @@ def determine_particle(word: str, particle: str) -> str:
 
 
 def find_literals(script: str):
-    regex_literal = r'%{\w*?}|%{{\w*?}}|%{\d*?\-\d*?}|%{[ \w|]*?}'
+    regex_literal = r'%{\w*?}|%{{\w*?}}|%{\d*?\-\d*?}|%{[^}]*?}'
     literals = re.findall(regex_literal, script)
-
 
     # remove numbered literals
     literals = (literal for literal in literals if not re.match(r'%{\d*?}', literal))
