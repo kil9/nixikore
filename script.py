@@ -114,6 +114,22 @@ def find_literals(script: str):
 
     return literals
 
+def replace_literal_with_particle(script, literal, rep: str) -> str:
+    if literal not in script:
+        return script
+
+    log.debug(f'literal: {literal} -> {rep}')
+    pre_words, post_words = script.split(literal, 1)
+
+    splitted = post_words.split(' ', 1)
+    if len(splitted) == 2:
+        particle, post_words = splitted
+        script = pre_words + determine_particle(rep, particle) + ' ' + post_words
+    else:
+        script = pre_words + determine_particle(rep, post_words)
+    return script
+    
+
 def replace_literals(script):
     return do_replace_literals(script, 0)
 
@@ -133,26 +149,16 @@ def do_replace_literals(script, depth):
             log.exception(e)
             log.error(f'failed to replace literal: {literal}')
             return script
-        log.debug(f'literal: {literal} -> {rep}')
 
         if not literal in script:
             continue
 
         # insert normal literal
-        pre_words, post_words = script.split(literal, 1)
-
-        splitted = post_words.split(' ', 1)
-        if len(splitted) == 2:
-            particle, post_words = splitted
-            script = pre_words + determine_particle(rep, particle) + ' ' + post_words
-        else:
-            script = pre_words + determine_particle(rep, post_words)
+        script = replace_literal_with_particle(script, literal, rep)
 
         # insert numbered literal
         numbered_literal = '%{' + str(i+1) + '}'
-        if numbered_literal in script:
-            script = script.replace(numbered_literal, rep)
-            log.debug(f'\t\treplace numbered: {numbered_literal} -> {rep}')
+        script = replace_literal_with_particle(script, numbered_literal, rep)
 
     log.error(f'script rl: {script}')
     return do_replace_literals(script, depth+1)
