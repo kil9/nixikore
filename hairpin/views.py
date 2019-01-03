@@ -40,11 +40,13 @@ def pending_tweets():
         .order_by(PendingTweet.id.asc()) \
         .paginate(page=page, per_page=20)
 
+    next_url = url_for('pending_tweets', page=tweets.next_num) if tweets.has_next else None
+    prev_url = url_for('pending_tweets', page=tweets.prev_num) if tweets.has_prev else None
     payload = {
             'tweets': tweets,
             'page': page,
-            'next_url': url_for('pending_tweets', page=tweets.next_num) if tweets.has_next else None,
-            'prev_url': url_for('pending_tweets', page=tweets.prev_num) if tweets.has_prev else None,
+            'next_url': next_url,
+            'prev_url': prev_url,
     }
 
     return render_template('pending_tweets.html', menu='pending_tweets', payload=payload)

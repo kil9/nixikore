@@ -36,9 +36,9 @@
     <table class="ui celled table">
       <thead>
         <tr>
-          <th>id</th>
+          <th class="center aligned">id</th>
           <th>category</th>
-          <th class="center aligned">content</th>
+          <th>content</th>
           <th class="center aligned">block</th>
           {#
           <th>added_by</th>
@@ -46,13 +46,13 @@
           <th>mod_by</th>
           <th>mod_at</th>
           -#}
-          <th>del</th>
+          <th class="center aligned">del</th>
         </tr>
       </thead>
       <tbody>
         {%- for word in payload.words.items %}
         <tr>
-          <td data-label="id">{{ word.id }}</td>
+          <td data-label="id" class="center aligned">{{ word.id }}</td>
           <td data-label="category">
             <a href="{{ url_for('categories') }}">
             {{ word.category }}

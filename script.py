@@ -51,7 +51,7 @@ class Literal():
 
     def _process_numbers(self) -> Word:
         matched = re.match(self.regex_numbers, self.content)
-        start, end = matched.group('start'),matched.group('end')
+        start, end = matched.group('start'), matched.group('end')
         rand = random.randrange(int(start), int(end))
         return Word(content=str(rand))
 
@@ -68,7 +68,6 @@ class Literal():
         ind = random.randrange(0, count)
         replaced = Word.query.filter_by(category=self.category)[ind]
         return replaced
-
 
     def replace(self):
         if self.type == LiteralType.EXACT_MATCH:
@@ -113,6 +112,7 @@ def find_literals(script: str):
 
     return literals
 
+
 def replace_literal_with_particle(script, literal, rep: str) -> str:
     if literal not in script:
         return script
@@ -127,10 +127,11 @@ def replace_literal_with_particle(script, literal, rep: str) -> str:
     else:
         script = pre_words + determine_particle(rep, post_words)
     return script
-    
+
 
 def replace_literals(script):
     return do_replace_literals(script, 0)
+
 
 def do_replace_literals(script, depth):
     if depth > 10:
@@ -149,7 +150,7 @@ def do_replace_literals(script, depth):
             log.error(f'failed to replace literal: {literal}')
             return script
 
-        if not literal in script:
+        if literal not in script:
             continue
 
         # insert normal literal

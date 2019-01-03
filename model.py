@@ -1,7 +1,6 @@
 import datetime
-import re
 
-from config import db, log, session_scope
+from config import db
 
 
 class Config(db.Model):
