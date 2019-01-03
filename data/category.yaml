@@ -15,17 +15,20 @@ children:
     children:
     - name: "게임기"
     - name: "음식"
-  - name: "책"
-  - name: "게임"
-    children:
-      - name: "온라인게임"
   - name: "필살기"
   - name: "언어"
   - name: "관계"
-  - name: "영상"
+  - name: "작품"
     children:
       - name: "애니"
       - name: "영화"
-  - name: "감탄사"
+      - name: "책"
+  - name: "게임"
+    children:
+      - name: "온라인게임"
   - name: "형용사"
   - name: "직업"
+  - name: "종결"
+    children:
+    - name: "해시"
+    - name: "감탄사"
