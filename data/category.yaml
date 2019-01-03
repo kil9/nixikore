@@ -28,3 +28,4 @@ children:
       - name: "영화"
   - name: "감탄사"
   - name: "형용사"
+  - name: "직업"
