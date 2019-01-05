@@ -55,7 +55,7 @@
   </thead>
   <tbody>
     {%- for tweet in payload.tweets.items %}
-    <tr{% if loop.index == 1 %} class="positive"{% endif %}>
+    <tr{% if payload.page == 1 and loop.index == 1 %} class="positive"{% endif %}>
       <td data-label="id" class="center aligned">{{ tweet.id }}</td>
       <td data-label="content">{{ tweet.content }}</td>
       <td data-label="img" class="center aligned">
