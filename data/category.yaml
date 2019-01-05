@@ -30,6 +30,7 @@ children:
   - name: "직업"
   - name: "형용사"
   - name: "문장"
+  - name: "룰"
   - name: "종결"
     children:
     - name: "해시"
