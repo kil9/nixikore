@@ -79,7 +79,12 @@ class Literal():
         else:
             replaced = self._process_normal()
 
-        self.content = replaced.content
+        replaced_str = replaced.content
+        literals = find_literals(replaced_str)
+        for literal in literals:
+            replaced_str = replace_literals(replaced_str)
+
+        self.content = replaced_str
         return self.content
 
 
