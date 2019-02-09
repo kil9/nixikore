@@ -33,6 +33,30 @@
     </div>
   </div>
   <div class="twelve wide column">
+    {% set pagination = payload.words %}
+    <div class="ui pagination menu">
+      <a class="
+        {%- if not payload.words.has_prev %}disabled{% endif %} item"
+         {% if payload.prev_url %}href="{{ payload.prev_url }}"{% endif %}>
+        <i class="angle double left icon"></i>
+      </a>
+      {%- for page in pagination.iter_pages() %}
+        {% if page %}
+          {% if page != pagination.page %}
+            <a class="item" href="{{ url_for('words', page=page, category=payload.category) }}">{{ page }}</a>
+          {% else %}
+            <a class="active item">{{ page }}</a>
+          {% endif %}
+        {% else %}
+          <i class="ellipsis horizontal icon"></i>
+        {% endif %}
+      {%- endfor %}
+      <a class="
+        {%- if not payload.words.has_next %}disabled{% endif %} item"
+        {% if payload.next_url %}href="{{ payload.next_url }}"{% endif %}>
+        <i class="angle double right icon"></i>
+      </a>
+    </div>
     <table class="ui celled table">
       <thead>
         <tr>

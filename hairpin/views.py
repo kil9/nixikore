@@ -244,6 +244,8 @@ def words():
             'words': words,
             'categories': categories,
             'category': category,
+            'next_url': url_for('words', page=words.next_num, category=category) if words.has_next else None,
+            'prev_url': url_for('words', page=words.prev_num, category=category) if words.has_prev else None,
             }
 
     return render_template('words.html', menu='words', payload=payload)
