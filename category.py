@@ -8,7 +8,7 @@ class Category:
         self.raw = ''.join(self.raw)
 
         with open(filename, 'r') as f:
-            category = yaml.load(f)
+            category = yaml.load(f, Loader=yaml.FullLoader)
 
         self.category = category
 
