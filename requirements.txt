@@ -18,7 +18,7 @@ oauthlib==2.1.0
 pycodestyle==2.4.0
 pyflakes==2.0.0
 PySocks==1.6.8
-PyYAML==3.13
+PyYAML==5.1
 requests==2.21.0
 requests-oauthlib==1.0.0
 six==1.12.0
