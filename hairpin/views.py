@@ -52,6 +52,16 @@ def pending_tweets():
     return render_template('pending_tweets.html', menu='pending_tweets', payload=payload)
 
 
+@hairpin.route('/pending_tweets/publish/<int:tweet_id>', methods=['POST'])
+def publish_tweet(tweet_id: int):
+    flash(f'{tweet_id} 스크립트를 트윗했습니다.')
+
+    pending_tweet = PendingTweet.query.filter_by(id=tweet_id).first()
+    tweet(False, tweet=pending_tweet)
+
+    return 'ok'
+
+
 @hairpin.route('/pending_tweets/<int:tweet_count>', methods=['POST'])
 def generate_tweets(tweet_count: int):
     try:
@@ -240,12 +250,14 @@ def words():
                 .order_by(Word.id.desc()) \
                 .paginate(page=page, per_page=20)
 
+    next_url = url_for('words', page=words.next_num, category=category) if words.has_next else None
+    prev_url = url_for('words', page=words.prev_num, category=category) if words.has_prev else None
     payload = {
             'words': words,
             'categories': categories,
             'category': category,
-            'next_url': url_for('words', page=words.next_num, category=category) if words.has_next else None,
-            'prev_url': url_for('words', page=words.prev_num, category=category) if words.has_prev else None,
+            'next_url': next_url,
+            'prev_url': prev_url,
             }
 
     return render_template('words.html', menu='words', payload=payload)

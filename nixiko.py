@@ -56,8 +56,20 @@ def tweet(debug):
     return do_tweet(debug)
 
 
-def do_tweet(debug):
-    tweet = PendingTweet.query.order_by(PendingTweet.added_at.asc()).first()
+def do_tweet(debug, tweet=None, script=None):
+    if script is not None:
+        msg = script
+        if not debug:
+            api = get_twitter_api()
+            api.update_status(status=tweet.content)
+
+        msg = f'tweeted: {tweet}'
+        log.info(msg)
+        print(msg)
+        return
+
+    if tweet is None:
+        tweet = PendingTweet.query.order_by(PendingTweet.added_at.asc()).first()
     if not tweet:
         msg = 'has no pending tweet. generate..'
         print(msg)

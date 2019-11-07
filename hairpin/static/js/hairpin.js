@@ -38,6 +38,20 @@ $('.hairpin-delete')
       }).modal('show');
   });
 
+$('.hairpin-publish')
+  .on('click', function() {
+    $.ajax({
+      url: $(this).data('url'),
+      type: 'POST',
+      success: function(result) {
+        location.reload();
+      },
+      error: function(result) {
+        console.error('result', result)
+      }
+    });
+  });
+
 $('.actions .hairpin-cancel')
   .on('click', function() {
     $('hairpin-confirm-modal').modal('hide');

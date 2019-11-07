@@ -49,7 +49,8 @@
       <th class="center aligned">id</th>
       <th>content</th>
       <th class="center aligned">img</th>
-      <th class="center aligned">reply</th>
+      <th class="center aligned">rep</th>
+      <th class="center aligned">pub</th>
       <th class="center aligned">del</th>
     </tr>
   </thead>
@@ -71,6 +72,14 @@
         {% else %}
           {{ tweet.reply_id }}
         {%- endif %}
+      </td>
+      <td data-label="publish" class="center aligned">
+        <a class="hairpin-publish"
+          data-content="{{ tweet.content }}"
+          data-url='/pending_tweets/publish/{{ tweet.id }}'
+          href='' onclick="return false;">
+          <i class="green play circle outline icon"></i>
+        </a>
       </td>
       <td data-label="delete" class="center aligned">
         <a class="hairpin-delete"

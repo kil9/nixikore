@@ -28,7 +28,8 @@ log.setLevel(logging.DEBUG)
 log.addHandler(fh)
 
 # session
-DB_PASSWORD = os.environ['DB_PASSWORD']
+# DB_PASSWORD = os.environ['DB_PASSWORD']
+DB_PASSWORD = 'hdxnd0v99'
 engine = create_engine(f'mysql://nixiko:{DB_PASSWORD}@localhost/nixiko?charset=utf8')
 Session = sessionmaker(bind=engine)
 
