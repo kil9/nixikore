@@ -26,16 +26,16 @@ $('.hairpin-test-script')
 
 $('.hairpin-delete')
   .on('click', function() {
-    $('#hairpin-action').text(
-      ($(this).data('category') ? '[' + $(this).data('category') + '] ' : '') +
-      $(this).data('content'));
-    $('.hairpin-confirm')
-      .data('url', $(this).data('url'))
-      .data('type', 'delete');
-    $('.hairpin-confirm-modal')
-      .modal({
-        centered: false
-      }).modal('show');
+    $.ajax({
+      url: $(this).data('url'),
+      type: 'delete',
+      success: function(result) {
+        location.reload();
+      },
+      error: function(result) {
+        console.error('result', result)
+      }
+    });
   });
 
 $('.hairpin-publish')
