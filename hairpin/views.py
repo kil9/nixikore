@@ -67,7 +67,7 @@ def post_pending_tweets():
     except Exception as e:
         hairpin.logger.exception(e)
         flash('저장에 실패했습니다. 로그를 확인해주세요.')
-        return redirect(url_for('scripts'))
+        return redirect(url_for('pending_tweets'))
 
     flash('성공적으로 저장했습니다.')
     return redirect(url_for('pending_tweets'))
