@@ -133,7 +133,7 @@ def scripts():
 
 @hairpin.route('/scripts/test/<int:script_id>', methods=['GET'])
 def test_scripts(script_id):
-    tweets = generate(True, 10, id=script_id)
+    tweets = generate(True, 20, id=script_id)
     return render_template('test_result.html', tweets=tweets)
 
 
