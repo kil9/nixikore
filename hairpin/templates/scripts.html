@@ -1,21 +1,30 @@
-{% extends 'base.html' %}
-{% block contents %}
+{% extends 'base.html' %} {% block contents %}
 
 <form class="ui form" action="/scripts" method="POST">
   <h4 class="ui dividing header">입력</h4>
   <div class="field">
     <div class="fields">
       <div class="twelve wide field">
-    		<label>스크립트</label>
-        <input type="text" name="script" placeholder="닉시코다요 %{사람}!" autocomplete="off">
+        <label>스크립트</label>
+        <input
+          type="text"
+          name="script"
+          placeholder="닉시코다요 %{사람}!"
+          autocomplete="off"
+        />
       </div>
       <div class="four wide field">
-    		<label>이미지 키워드</label>
-        <input type="text" name="image_keyword" placeholder="안녕" autocomplete="off">
+        <label>이미지 키워드</label>
+        <input
+          type="text"
+          name="image_keyword"
+          placeholder="안녕"
+          autocomplete="off"
+        />
       </div>
     </div>
   </div>
-  <input class="positive ui button" type="submit" value="입력">
+  <input class="positive ui button" type="submit" value="입력" />
 </form>
 
 <div class="ui divider"></div>
@@ -25,32 +34,45 @@
 
 <div class="ui message">
   <i class="close icon"></i>
-  <div class="header"> 리터럴 사용법 </div>
+  <div class="header">리터럴 사용법</div>
   <p>%{단어}: 하위 카테고리를 모두 포함하여 랜덤</p>
   <p>%{ {단어} }: 오직 해당 카테고리 랜덤</p>
   <p>%{X-Y}: X 이상 Y 미만의 정수</p>
 </div>
 
 <div class="ui pagination menu">
-  <a class="
+  <a
+    class="
     {%- if not payload.scripts.has_prev %}disabled{% endif %} item"
-     {% if payload.prev_url %}href="{{ payload.prev_url }}"{% endif %}>
+    {%
+    if
+    payload.prev_url
+    %}href="{{ payload.prev_url }}"
+    {%
+    endif
+    %}
+  >
     <i class="angle double left icon"></i>
   </a>
-  {%- for page in pagination.iter_pages() %}
-    {% if page %}
-      {% if page != pagination.page %}
-        <a class="item" href="{{ url_for('scripts', page=page) }}">{{ page }}</a>
-      {% else %}
-        <a class="active item">{{ page }}</a>
-      {% endif %}
-    {% else %}
-      <i class="ellipsis horizontal icon"></i>
-    {% endif %}
-  {%- endfor %}
-  <a class="
+  {%- for page in pagination.iter_pages() %} {% if page %} {% if page !=
+  pagination.page %}
+  <a class="item" href="{{ url_for('scripts', page=page) }}">{{ page }}</a>
+  {% else %}
+  <a class="active item">{{ page }}</a>
+  {% endif %} {% else %}
+  <i class="ellipsis horizontal icon"></i>
+  {% endif %} {%- endfor %}
+  <a
+    class="
     {%- if not payload.scripts.has_next %}disabled{% endif %} item"
-    {% if payload.next_url %}href="{{ payload.next_url }}"{% endif %}>
+    {%
+    if
+    payload.next_url
+    %}href="{{ payload.next_url }}"
+    {%
+    endif
+    %}
+  >
     <i class="angle double right icon"></i>
   </a>
 </div>
@@ -73,7 +95,7 @@
   </thead>
   <tbody>
     {%- for script in payload.scripts.items %}
-    <tr{% if script.is_blocked %} class="negative"{% endif %}>
+    <tr {% if script.is_blocked %} class="negative" {% endif %}>
       <td data-label="id" class="center aligned">{{ script.id }}</td>
       <td data-label="content">{{ script.content }}</td>
       <td data-label="is_blocked" class="center aligned">
@@ -86,9 +108,7 @@
       <td data-label="img" class="center aligned">
         {% if not script.image_keyword %}
         <i class="minus icon"></i>
-        {% else %}
-          {{ script.image_keyword }}
-        {% endif %}
+        {% else %} {{ script.image_keyword }} {% endif %}
       </td>
       {#
       <td data-label="added_by">{{ script.added_by }}</td>
@@ -97,18 +117,24 @@
       <td data-label="modified_at">{{ script.modified_at }}</td>
       -#}
       <td data-label="test" class="center aligned">
-        <a class="hairpin-test-script"
+        <a
+          class="hairpin-test-script"
           data-content="{{ script.content }}"
-          data-url='/scripts/test/{{ script.id }}'
-          href='' onclick="return false;">
+          data-url="/scripts/test/{{ script.id }}"
+          href=""
+          onclick="return false;"
+        >
           <i class="teal check square icon"></i>
         </a>
       </td>
       <td data-label="delete" class="center aligned">
-        <a class="hairpin-delete"
+        <a
+          class="hairpin-delete"
           data-content="{{ script.content }}"
-          data-url='/scripts/{{ script.id }}'
-          href='' onclick="return false;">
+          data-url="/scripts/{{ script.id }}"
+          href=""
+          onclick="return false;"
+        >
           <i class="red x icon"></i>
         </a>
       </td>

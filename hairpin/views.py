@@ -51,6 +51,27 @@ def pending_tweets():
 
     return render_template('pending_tweets.html', menu='pending_tweets', payload=payload)
 
+@hairpin.route('/pending_tweets', methods=['POST'])
+def post_pending_tweets():
+    if 'content' not in request.form:
+        flash('트윗 내용이 비어있습니다.')
+        return redirect(url_for('pending_tweets'))
+
+    tweet = request.form['content']
+
+    pending_tweet = PendingTweet(content=tweet)
+
+    db.session.add(pending_tweet)
+    try:
+        db.session.commit()
+    except Exception as e:
+        hairpin.logger.exception(e)
+        flash('저장에 실패했습니다. 로그를 확인해주세요.')
+        return redirect(url_for('scripts'))
+
+    flash('성공적으로 저장했습니다.')
+    return redirect(url_for('pending_tweets'))
+
 
 @hairpin.route('/pending_tweets/publish/<int:tweet_id>', methods=['POST'])
 def publish_tweet(tweet_id: int):
@@ -119,13 +140,12 @@ def test_scripts(script_id):
 @hairpin.route('/scripts', methods=['POST'])
 def post_scripts():
     script = request.form['script']
-    image_keyword = request.form['image_keyword']
-
     if not script:
         flash('스크립트 내용이 비어있습니다.')
         return redirect(url_for('scripts'))
 
-    if image_keyword:
+    if 'image_keyword' in request.form:
+        image_keyword = request.form['image_keyword']
         periodic_script = PeriodicScript(content=script, image_keyword=image_keyword)
     else:
         periodic_script = PeriodicScript(content=script)

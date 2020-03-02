@@ -1,5 +1,29 @@
-{%- for tweet in tweets %}
-<div class="ui segment">
-	<p>{{ tweet }}</p>
-</div>
-{% endfor -%}
+<table class="ui table">
+  <thead>
+    <tr>
+      <th>script</th>
+      <th>upload</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%- for tweet in tweets %}
+    <tr>
+      <td>
+        {{ tweet }}
+      </td>
+      <td data-label="upload">
+        <a
+          class="hairpin-add-pending-tweet"
+          data-content="{{ tweet }}"
+          data-url="/pending_tweets"
+          href=""
+          onclick="return false;"
+        >
+          <i class="blue pencil icon"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor -%}
+  </tbody>
+</table>
+<script src="{{url_for('static', filename='js/hairpin.js')}}"></script>
